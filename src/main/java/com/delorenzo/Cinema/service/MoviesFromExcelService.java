@@ -3,35 +3,21 @@ package com.delorenzo.Cinema.service;
 import com.delorenzo.Cinema.conf.StorageProperties;
 import com.delorenzo.Cinema.dto.NewMovie;
 import com.delorenzo.Cinema.exception.StorageException;
-import com.delorenzo.Cinema.utils.Utils;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.LocalDate;
 import java.util.*;
 
 @Service
 public class MoviesFromExcelService {
 
     private final Path rootLocation;
-
-    private FileInputStream inputStream;
-
-    private String fileName;
-
-    private Workbook workbook;
-
-    private Sheet firstSheet;
-
-    private Iterator<Row> rowIterator;
 
     private static final Logger logger = LoggerFactory.getLogger(MoviesFromExcelService.class);
 
@@ -42,18 +28,17 @@ public class MoviesFromExcelService {
         }
         this.rootLocation = Paths.get(properties.getLocation());
 
-
     }
 
     public List<NewMovie> readFile(String fileName) throws IOException {
 
         fileName = fileName.trim();
- 
-        this.inputStream = new FileInputStream("target/classes/files/"+fileName);
-        this.workbook = new XSSFWorkbook(inputStream);
+
+        FileInputStream inputStream = new FileInputStream(rootLocation+"/" + fileName);
+        Workbook workbook = new XSSFWorkbook(inputStream);
         List<NewMovie> newMovies = new ArrayList<>();
-        this.firstSheet = workbook.getSheetAt(0);
-        this.rowIterator = firstSheet.iterator();
+        Sheet firstSheet = workbook.getSheetAt(0);
+        Iterator<Row> rowIterator = firstSheet.iterator();
         rowIterator.next();
 
         while (rowIterator.hasNext()) {

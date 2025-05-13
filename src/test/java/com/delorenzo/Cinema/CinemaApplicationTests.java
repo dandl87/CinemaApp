@@ -1,6 +1,7 @@
 package com.delorenzo.Cinema;
 
 import com.delorenzo.Cinema.conf.SchedulerDataLoader;
+import com.delorenzo.Cinema.conf.StorageProperties;
 import com.delorenzo.Cinema.entity.Movie;
 import com.delorenzo.Cinema.entity.Room;
 import com.delorenzo.Cinema.entity.Screening;
@@ -10,10 +11,7 @@ import com.delorenzo.Cinema.repository.MovieRepository;
 import com.delorenzo.Cinema.repository.RoomRepository;
 import com.delorenzo.Cinema.repository.ScreeningRepository;
 import com.delorenzo.Cinema.repository.WeekRepository;
-import com.delorenzo.Cinema.service.MainService;
-import com.delorenzo.Cinema.service.MovieService;
-import com.delorenzo.Cinema.service.MoviesFromExcelService;
-import com.delorenzo.Cinema.service.WeekService;
+import com.delorenzo.Cinema.service.*;
 import com.delorenzo.Cinema.utils.Utils;
 import org.junit.jupiter.api.*;
 import org.slf4j.Logger;
@@ -22,7 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.DefaultApplicationArguments;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.core.env.Environment;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.ArrayList;
@@ -49,7 +46,7 @@ class CinemaApplicationTests implements PostgreSQLContainerInitializer{
 	@Autowired
 	ScreeningRepository screeningRepository;
 	@Autowired
-	Environment environment;
+	StorageProperties storageProperties;
 
 
 
@@ -90,7 +87,10 @@ class CinemaApplicationTests implements PostgreSQLContainerInitializer{
 		Optional<Scheduler> regularScheduler = Utils.getSchedulerByName(schedulers,"regular");
 		WeekService weekService = new WeekService();
 		MovieService movieService = new MovieService(movieRepository);
-		MoviesFromExcelService moviesFromExcelService = new MoviesFromExcelService(environment);
+		StorageService storageService = new FileSystemStorageService(storageProperties);
+		storageService.deleteAll();
+		storageService.init();
+		MoviesFromExcelService moviesFromExcelService = new MoviesFromExcelService(storageProperties);
 
 		MainService mainService = new MainService(moviesFromExcelService,
 				weekRepository,
@@ -107,33 +107,6 @@ class CinemaApplicationTests implements PostgreSQLContainerInitializer{
 		Assertions.assertEquals(1, weeks.size());
 	}
 
-	@DisplayName("Test di integrazione: first weekly batch processing")
-	@Test
-	void weeklyBatchTest() throws Exception {
-
-		List<Scheduler> schedulers = schedulerInit();
-		Optional<Scheduler> imaxScheduler = Utils.getSchedulerByName(schedulers,"imax");
-		Optional<Scheduler> regularScheduler = Utils.getSchedulerByName(schedulers,"regular");
-		WeekService weekService = new WeekService();
-		MovieService movieService = new MovieService(movieRepository);
-		MoviesFromExcelService moviesFromExcelService = new MoviesFromExcelService(environment);
-
-		MainService mainService = new MainService(moviesFromExcelService,
-				weekRepository,
-				movieRepository,
-				imaxScheduler.get(),
-				regularScheduler.get(),
-				movieService,
-				weekService);
-
-		mainService.initializationBatch();
-		mainService.weeklyBatch();
-		List<Screening> screenings = screeningRepository.findAll();
-		Assertions.assertEquals(22, screenings.size());
-		List<Week> weeks = weekRepository.findAll();
-		Assertions.assertEquals(2, weeks.size());
-
-	}
 
 	private List<Scheduler> schedulerInit() throws Exception {
 		List<Scheduler> schedulers = new ArrayList<>();

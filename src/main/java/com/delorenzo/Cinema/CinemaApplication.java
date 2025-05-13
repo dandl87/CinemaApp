@@ -25,18 +25,15 @@ public class CinemaApplication {
 
         MainService mainService = context.getBean(MainService.class);
 
+        StorageService storageService = context.getBean(StorageService.class);
+        storageService.deleteAll();
+        storageService.init();
+
         mainService.initializationBatch();
 
 
     }
 
-    @Bean
-    CommandLineRunner init(StorageService storageService) {
-        return (args) -> {
-            storageService.deleteAll();
-            storageService.init();
-        };
-    }
 
 
 
