@@ -20,7 +20,7 @@ public class MainController {
         this.movieService = movieService;
     }
 
-    @GetMapping
+    @GetMapping("/")
     public String home(Model model){
         model.addAttribute("titoloPagina", "Home Page");
         return "home";
@@ -30,7 +30,7 @@ public class MainController {
     public String getMovies(Model model){
         List<Movie> filmList = movieService.findAllMovies();
         model.addAttribute("filmList", filmList);
-        return "movies";
+        return "movieList";
     }
 
     @GetMapping("/movies/upload")
