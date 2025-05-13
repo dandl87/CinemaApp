@@ -1,6 +1,8 @@
 package com.delorenzo.Cinema.service;
 
+import com.delorenzo.Cinema.conf.StorageProperties;
 import com.delorenzo.Cinema.dto.NewMovie;
+import com.delorenzo.Cinema.exception.StorageException;
 import com.delorenzo.Cinema.utils.Utils;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -11,13 +13,15 @@ import org.springframework.stereotype.Service;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.*;
 
 @Service
 public class MoviesFromExcelService {
 
-    private final Environment env;
+    private final Path rootLocation;
 
     private FileInputStream inputStream;
 
@@ -31,19 +35,22 @@ public class MoviesFromExcelService {
 
     private static final Logger logger = LoggerFactory.getLogger(MoviesFromExcelService.class);
 
-    public MoviesFromExcelService(Environment env) throws IOException {
-        this.env = env;
-        fileName = env.getProperty("data.source[0]");
-        Optional<String> optEnvProp = Optional.ofNullable(fileName);
-        if(optEnvProp.isEmpty())
-            throw new FileNotFoundException("file path not valid");
+    public MoviesFromExcelService(StorageProperties properties) throws IOException {
 
-        this.inputStream = new FileInputStream("src/main/resources/"+optEnvProp.get());
-        this.workbook = new XSSFWorkbook(inputStream);
+        if(properties.getLocation().trim().isEmpty()) {
+            throw new StorageException("File upload location can not be empty");
+        }
+        this.rootLocation = Paths.get(properties.getLocation());
+
 
     }
 
-    public List<NewMovie> readFile() throws IOException {
+    public List<NewMovie> readFile(String fileName) throws IOException {
+
+        fileName = fileName.trim();
+ 
+        this.inputStream = new FileInputStream("target/classes/files/"+fileName);
+        this.workbook = new XSSFWorkbook(inputStream);
         List<NewMovie> newMovies = new ArrayList<>();
         this.firstSheet = workbook.getSheetAt(0);
         this.rowIterator = firstSheet.iterator();
@@ -54,7 +61,6 @@ public class MoviesFromExcelService {
 
             Row nextRow = rowIterator.next();
 
-            //if(checkDate(nextRow)) {
 
                 NewMovie newMovie = new NewMovie();
 
@@ -101,7 +107,6 @@ public class MoviesFromExcelService {
                 }
                 newMovies.add(newMovie);
             }
-        //}
         workbook.close();
         return newMovies;
 

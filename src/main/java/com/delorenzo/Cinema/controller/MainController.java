@@ -2,6 +2,7 @@ package com.delorenzo.Cinema.controller;
 
 import com.delorenzo.Cinema.entity.Movie;
 import com.delorenzo.Cinema.service.MovieService;
+import com.delorenzo.Cinema.service.StorageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -15,9 +16,11 @@ public class MainController {
 
     private final static Logger logger = LoggerFactory.getLogger(MainController.class);
     private final MovieService movieService;
+    private final StorageService storageService;
 
-    public MainController(MovieService movieService) {
+    public MainController(MovieService movieService, StorageService storageService) {
         this.movieService = movieService;
+        this.storageService = storageService;
     }
 
     @GetMapping("/")
@@ -38,12 +41,6 @@ public class MainController {
         return "upload";
     }
 
-    @GetMapping("/movies/insert")
-    public String insertMovies(Model model){
-        boolean insertionResult = false;
-        model.addAttribute("insertion",insertionResult);
-        return "upload";
-    }
 
     @GetMapping("/screenings")
     public String getScreenings(Model model){

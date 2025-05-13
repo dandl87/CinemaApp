@@ -61,11 +61,11 @@ public class MainService {
 
 
     //  second scheduling process with screenings/week saving ( from movies in file excel )
-    public void weeklyBatch() throws DataRetrievingFromExcelException {
+    public void weeklyBatch(String fileName) throws DataRetrievingFromExcelException {
 
         logger.info("Weekly Batch process");
         try {
-            List<NewMovie> newMovies = moviesFromExcel.readFile();
+            List<NewMovie> newMovies = moviesFromExcel.readFile(fileName);
             List<Movie> regularMovies = new ArrayList<>();
             List<Movie> imaxMovies = new ArrayList<>();
 

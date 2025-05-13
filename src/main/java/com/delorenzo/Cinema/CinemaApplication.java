@@ -1,17 +1,19 @@
 package com.delorenzo.Cinema;
 
-import com.delorenzo.Cinema.conf.DataSourceProperties;
-import com.delorenzo.Cinema.exception.DataRetrievingFromExcelException;
+import com.delorenzo.Cinema.conf.StorageProperties;
 import com.delorenzo.Cinema.service.MainService;
+import com.delorenzo.Cinema.service.StorageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.Bean;
 
 
-@EnableConfigurationProperties(DataSourceProperties.class)
+@EnableConfigurationProperties(StorageProperties.class)
 @SpringBootApplication
 public class CinemaApplication {
 
@@ -25,16 +27,16 @@ public class CinemaApplication {
 
         mainService.initializationBatch();
 
-        try {
-            Thread.sleep(3000);
-            mainService.weeklyBatch();
-        } catch (DataRetrievingFromExcelException | InterruptedException e) {
-            throw new RuntimeException(e);
-        }
 
     }
 
-
+    @Bean
+    CommandLineRunner init(StorageService storageService) {
+        return (args) -> {
+            storageService.deleteAll();
+            storageService.init();
+        };
+    }
 
 
 

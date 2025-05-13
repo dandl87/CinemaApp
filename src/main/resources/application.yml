@@ -2,6 +2,7 @@ spring:
   application:
     name: cinema
 
+
   devtools:
     livereload:
       enabled: true
@@ -46,7 +47,3 @@ spring:
       max-file-size: 128KB
       max-request-size: 128KB
 
-data:
-  source:
-    - test.xlsx
-    - src/main/resources/
