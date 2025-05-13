@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Lista Film</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    nav {
+      background-color: #f0f0f0;
+      padding: 10px;
+    }
+    nav a {
+      margin-right: 20px;
+      text-decoration: none;
+      color: #333;
+      font-weight: bold;
+    }
+    nav a:hover {
+      text-decoration: underline;
+    }
+    table {
+      width: 80%;
+      border-collapse: collapse;
+      margin: 20px auto;
+    }
+    th, td {
+      border: 1px solid #888;
+      padding: 8px;
+      text-align: center;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+    .true {
+      color: green;
+      font-weight: bold;
+    }
+    .false {
+      color: red;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+<nav>
+  <a th:href="@{/}" style="text-decoration: none; color: inherit;"><i class="fas fa-home"></i></a>
+  <a  style="text-decoration: none; color: inherit;"><i class="fa-solid fa-film"></i> Film</a>
+  <a th:href="@{/movies/insert}" style="text-decoration: none; color: inherit;"><i class="fa-solid fa-plus"></i> Inserisci film</a>
+  <a th:href="@{/screenings}" style="text-decoration: none; color: inherit;"><i class="fa-solid fa-calendar-days"></i> Proiezioni</a>
+</nav>
+<h1 style="text-align:center;">Lista dei Film</h1>
+
+<table>
+  <thead>
+  <tr>
+    <th>Titolo</th>
+    <th>Direttore</th>
+    <th>Anno</th>
+    <th>Durata (min)</th>
+    <th>IMAX</th>
+  </tr>
+  </thead>
+  <tbody>
+
+
+  <tr th:each="film : ${filmList}">
+    <td th:text="${film.title}">Titolo</td>
+    <td th:text="${film.director}">Direttore</td>
+    <td th:text="${film.year}">Anno</td>
+    <td th:text="${film.duration}">120</td>
+    <td th:text="${film.imax} ? 'SI' : 'NO'">  </td>
+  </tr>
+  </tbody>
+</table>
+</body>
+</html>

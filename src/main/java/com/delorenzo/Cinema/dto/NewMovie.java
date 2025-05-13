@@ -12,7 +12,6 @@ public class NewMovie {
     private int duration;
     private boolean imax;
     private double value;
-    private Date out;
     private String room;
 
     public NewMovie() {
@@ -28,7 +27,6 @@ public class NewMovie {
                 ", duration=" + duration +
                 ", imax=" + imax +
                 ", value=" + value +
-                ", out=" + out +
                 ", room='" + room + '\'' +
                 '}';
     }

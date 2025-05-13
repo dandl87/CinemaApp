@@ -107,10 +107,7 @@ class CinemaApplicationTests implements PostgreSQLContainerInitializer{
 		Assertions.assertEquals(1, weeks.size());
 	}
 
-	@DisplayName("Test con tutte le dipendenze per verificare che il metodo" +
-			"di inizializzazione Batch effettivamente " +
-			"crei le proiezioni e la settimana" +
-			"A db inizialmente ci sono 8 regular movies e 4 imax movies")
+	@DisplayName("Test di integrazione: first weekly batch processing")
 	@Test
 	void weeklyBatchTest() throws Exception {
 
@@ -132,7 +129,7 @@ class CinemaApplicationTests implements PostgreSQLContainerInitializer{
 		mainService.initializationBatch();
 		mainService.weeklyBatch();
 		List<Screening> screenings = screeningRepository.findAll();
-		Assertions.assertEquals(20, screenings.size());
+		Assertions.assertEquals(22, screenings.size());
 		List<Week> weeks = weekRepository.findAll();
 		Assertions.assertEquals(2, weeks.size());
 

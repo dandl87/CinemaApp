@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestione Cinema</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+        nav {
+            background-color: #f0f0f0;
+            padding: 10px;
+        }
+        nav a {
+            margin-right: 20px;
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+<nav>
+    <a style="text-decoration: none; color: inherit;"><i class="fas fa-home"></i></a>
+    <a th:href="@{/movies}" style="text-decoration: none; color: inherit;"><i class="fa-solid fa-film"></i> Film</a>
+    <a th:href="@{/movies/insert}" style="text-decoration: none; color: inherit;"><i class="fa-solid fa-plus"></i> Inserisci film</a>
+    <a th:href="@{/screenings}" style="text-decoration: none; color: inherit;"><i class="fa-solid fa-calendar-days"></i> Proiezioni</a>
+</nav>
+
+<div>
+    <h1 th:text="${titoloPagina}">Benvenuto nella gestione cinema</h1>
+</div>
+</body>
+</html>

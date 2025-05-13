@@ -94,11 +94,6 @@ public class MoviesFromExcelService {
                             newMovie.setValue(value);
                             break;
 
-                        case 6:
-                            Date out = nextCell.getDateCellValue();
-                            newMovie.setOut(out);
-                            break;
-
                         default:
                             logger.info("not a valid cell");
                     }
@@ -112,20 +107,5 @@ public class MoviesFromExcelService {
 
     }
 
-    /*
-    private boolean checkDate(Row nextRow) {
-        Iterator<Cell> cellIterator = nextRow.cellIterator();
-        Cell nextCell = cellIterator.next();
-        for(int i=0; i<6; i++)
-            nextCell = cellIterator.next();
-        Date out = nextCell.getDateCellValue();
-        logger.info(out.toString());
-        LocalDate movieOutDate = Utils.convertToLocalDateViaInstant(out);
-        LocalDate today = LocalDate.now();
-        return movieOutDate.isAfter(today) && movieOutDate.isBefore(today.plusDays(7));
-
-    }
-
-     */
 
 }

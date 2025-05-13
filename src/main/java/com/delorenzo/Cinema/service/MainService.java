@@ -47,11 +47,9 @@ public class MainService {
         List<Movie> regularMovies = movieRepository.findMovieByImax(false);
         List<Movie> imaxMovies = movieRepository.findMovieByImax(true);
 
-        //toBeDone logic with synch
         imaxScheduler.scheduling(imaxMovies);
         regularScheduler.scheduling(regularMovies);
 
-        // saving week ( and screenings )
         List<Scheduler> schedulers = new ArrayList<>();
         schedulers.add(imaxScheduler);
         schedulers.add(regularScheduler);
