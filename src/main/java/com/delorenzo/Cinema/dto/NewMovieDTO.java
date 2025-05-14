@@ -2,10 +2,8 @@ package com.delorenzo.Cinema.dto;
 
 import lombok.Data;
 
-import java.util.Date;
-
 @Data
-public class NewMovie {
+public class NewMovieDTO {
     private String title;
     private String director;
     private int year;
@@ -14,7 +12,7 @@ public class NewMovie {
     private double value;
     private String room;
 
-    public NewMovie() {
+    public NewMovieDTO() {
 
     }
 

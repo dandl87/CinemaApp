@@ -1,7 +1,7 @@
 package com.delorenzo.Cinema.service;
 
 import com.delorenzo.Cinema.conf.StorageProperties;
-import com.delorenzo.Cinema.dto.NewMovie;
+import com.delorenzo.Cinema.dto.NewMovieDTO;
 import com.delorenzo.Cinema.exception.StorageException;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -30,13 +30,13 @@ public class MoviesFromExcelService {
 
     }
 
-    public List<NewMovie> readFile(String fileName) throws IOException {
+    public List<NewMovieDTO> readFile(String fileName) throws IOException {
 
         fileName = fileName.trim();
 
         FileInputStream inputStream = new FileInputStream(rootLocation+"/" + fileName);
         Workbook workbook = new XSSFWorkbook(inputStream);
-        List<NewMovie> newMovies = new ArrayList<>();
+        List<NewMovieDTO> newMovies = new ArrayList<>();
         Sheet firstSheet = workbook.getSheetAt(0);
         Iterator<Row> rowIterator = firstSheet.iterator();
         rowIterator.next();
@@ -47,7 +47,7 @@ public class MoviesFromExcelService {
             Row nextRow = rowIterator.next();
 
 
-                NewMovie newMovie = new NewMovie();
+            NewMovieDTO newMovie = new NewMovieDTO();
 
                 Iterator<Cell> cellIterator = nextRow.cellIterator();
 

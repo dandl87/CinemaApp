@@ -6,43 +6,35 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 
+@Getter
+@Setter
 @Entity
 @Table(name = "screenings")
 public class Screening implements Cloneable {
-    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Getter
-    @Setter
     @ManyToOne
     @JoinColumn(name = "room_id")
     private Room room;
 
-    @Getter
-    @Setter
     @ManyToOne
     @JoinColumn(name = "movie_id")
     private Movie movie;
 
-    @Setter
-    @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "week_id")
-    private Week week;
+    private LocalDate firstDay;
 
-    @Getter
-    @Setter
     private int numberOfWeeks;
 
 
     public Screening() {
     }
 
-    public Screening(Room room, Movie movie,Week week) {
+    public Screening(Room room, Movie movie,LocalDate firstDay) {
         this.room = room;
         this.movie = movie;
-        this.week = week;
+        this.firstDay = firstDay;
     }
 
 
@@ -51,10 +43,23 @@ public class Screening implements Cloneable {
         Screening s = new Screening();
         s.setRoom(room);
         s.setMovie(movie);
-        s.setWeek(week);
+        s.setFirstDay(firstDay);
         s.setNumberOfWeeks(numberOfWeeks);
         return s;
     }
 
+    public boolean sameMovie(Screening screening){
+        return this.movie.equals(screening.getMovie());
+    }
 
+    @Override
+    public String toString() {
+        return "Screening{" +
+                "id=" + id +
+                ", room=" + room.getName() +
+                ", movie=" + movie.getTitle() +
+                ", firstDay=" + firstDay +
+                ", numberOfWeeks=" + numberOfWeeks +
+                '}';
+    }
 }

@@ -4,11 +4,11 @@ import com.delorenzo.Cinema.entity.Movie;
 import com.delorenzo.Cinema.entity.Room;
 import com.delorenzo.Cinema.entity.Screening;
 import com.delorenzo.Cinema.exception.RoomsSlotsMismatchException;
-import com.delorenzo.Cinema.utils.ScreeningComparator;
 import com.delorenzo.Cinema.utils.Utils;
 import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -19,28 +19,25 @@ public class Scheduler {
     private String name;
     @Getter
     private final Slot[] slots;
-    private final int numberOfRooms;
     private int freeRooms;
 
     public Scheduler(String name, int numberOfRooms) {
-        logger.info("Scheduler "+name+" creation");
+        logger.info("Scheduler {} creation", name);
         this.name = name;
-        this.numberOfRooms = numberOfRooms;
         this.freeRooms = numberOfRooms;
         this.slots = new Slot[numberOfRooms];
-        for(int i = 0; i < numberOfRooms; i++)
+        for (int i = 0; i < numberOfRooms; i++)
             slots[i] = new Slot();
     }
 
 
-
-    public void setRoomsToSlots(List<Room> rooms){
+    public void setRoomsToSlots(List<Room> rooms) {
         logger.info("Scheduler {} room assignment " +
                 "\n numer of rooms {} " +
                 "\n number of slots {} ", name, rooms.size(), getSlots());
-        if(getSlots().length != rooms.size())
+        if (getSlots().length != rooms.size())
             throw new RoomsSlotsMismatchException();
-        for(int i = 0; i < slots.length; i++) {
+        for (int i = 0; i < slots.length; i++) {
             slots[i].setRoom(rooms.get(i));
         }
     }
@@ -66,9 +63,8 @@ public class Scheduler {
         // and then the remainings ones to replace those of lesser value
         for (Slot slot : slots) {
             Optional<Screening> screeningMaxValue = Utils.extractScreeningWithMaxValue(screenings);
-            Optional<Screening> screeningMinValue = Utils.extractScreeningWithMinValue(screenings);
 
-        if ((slot.getScreening() != null) && (!screenings.isEmpty()) && (slot.getScreening().getMovie().getValue() < screeningMaxValue.get().getMovie().getValue())) {
+            if ((slot.getScreening() != null) && (!screenings.isEmpty()) && (slot.getScreening().getMovie().getValue() < screeningMaxValue.get().getMovie().getValue())) {
                 String movieReplaced = slot.getScreening().getMovie().getTitle();
                 slot.setScreening(screeningMaxValue.get());
                 screeningMaxValue.get().setRoom(slot.getRoom());
@@ -80,30 +76,16 @@ public class Scheduler {
 
     }
 
-
-
-
-    private void removeScreenings (){
+    private void removeScreenings() {
         for (Slot slot : slots) {
             Optional<Screening> screening = Optional.ofNullable(slot.getScreening());
             if (screening.isPresent()) {
                 if (screening.get().getNumberOfWeeks() == 3) {
-                    screening.get().setNumberOfWeeks(0);
                     slot.setScreening(null);
                     freeRooms--;
                 }
             }
         }
-    }
-
-    private List<Screening> getScreeningsInTheRoomsOrderedByMovieValue(){
-
-        List<Screening> orderedScreenings = new ArrayList<>();
-        for(int i = 0; i< slots.length; i++) {
-            orderedScreenings.add(slots[i].getScreening());
-        }
-        orderedScreenings.sort(new ScreeningComparator());
-        return orderedScreenings;
     }
 
     public List<Screening> getScheduledScreenings() {

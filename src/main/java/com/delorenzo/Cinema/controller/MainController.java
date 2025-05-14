@@ -9,7 +9,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 public class MainController {
@@ -39,6 +42,14 @@ public class MainController {
     @GetMapping("/movies/upload")
     public String upload(Model model){
         return "upload";
+    }
+
+    @GetMapping("/files")
+    public String getFiles(Model model) throws IOException {
+
+        model.addAttribute("files",storageService.loadAll().map(Path::getFileName).collect(Collectors.toList()));
+
+        return "uploadResultPage";
     }
 
 

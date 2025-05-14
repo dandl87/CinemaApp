@@ -10,14 +10,10 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.stream.Collectors;
 
 @Controller
 public class FileUploadController {
@@ -31,14 +27,6 @@ public class FileUploadController {
         this.mainService = mainService;
     }
 
-
-    @GetMapping("/files")
-    public String getFiles(Model model) throws IOException {
-
-        model.addAttribute("files",storageService.loadAll().map(Path::getFileName).collect(Collectors.toList()));
-
-        return "uploadResultPage";
-    }
 
     @GetMapping("/files/{filename:.+}")
     @ResponseBody

@@ -1,6 +1,6 @@
 package com.delorenzo.Cinema.service;
 
-import com.delorenzo.Cinema.dto.NewMovie;
+import com.delorenzo.Cinema.dto.NewMovieDTO;
 import com.delorenzo.Cinema.entity.Movie;
 import com.delorenzo.Cinema.repository.MovieRepository;
 import org.slf4j.Logger;
@@ -23,7 +23,7 @@ public class MovieService {
         this.movieRepository = movieRepository;
     }
 
-    private Movie createAMovie(NewMovie newMovie) {
+    private Movie createAMovie(NewMovieDTO newMovie) {
         Movie movie = new Movie();
         movie.setTitle(newMovie.getTitle());
         movie.setDirector(newMovie.getDirector());
@@ -34,7 +34,7 @@ public class MovieService {
         return movie;
     }
 
-    public Movie saveMovie(NewMovie newMovie) {
+    public Movie saveMovie(NewMovieDTO newMovie) {
         Movie movie = createAMovie(newMovie);
         movieRepository.save(movie);
         logger.info("Movie {} created", movie.getTitle());

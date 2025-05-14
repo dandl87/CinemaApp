@@ -1,6 +1,6 @@
 package com.delorenzo.Cinema.controller;
 
-import com.delorenzo.Cinema.dto.MovieScreening;
+import com.delorenzo.Cinema.dto.MovieScreeningDTO;
 import com.delorenzo.Cinema.entity.Movie;
 import com.delorenzo.Cinema.service.MovieService;
 import com.delorenzo.Cinema.service.ScreeningService;
@@ -32,15 +32,15 @@ public class MainRestController {
 
 
     @GetMapping("/movie-screenings/week")
-    public ResponseEntity<Set<MovieScreening>> findMovieScreeningsOfAWeek(@RequestParam String day) {
+    public ResponseEntity<Set<MovieScreeningDTO>> findMovieScreeningsOfAWeek(@RequestParam String day) {
         logger.info("movies of {}", day);
-        Set<MovieScreening> movieScreenings = screeningService.findMovieScreeningsOfTheWeek(day);
+        Set<MovieScreeningDTO> movieScreenings = screeningService.findMovieScreeningsOfTheWeek(day);
         return ResponseEntity.ok(movieScreenings);
     }
 
     @GetMapping("/movie-screenings/last-week")
-    public ResponseEntity<Set<MovieScreening>> findMovieScreeningsOfTheLastWeek( ) {
-        Set<MovieScreening> movieScreenings = screeningService.findMovieScreeningsOfTheLastWeek();
+    public ResponseEntity<Set<MovieScreeningDTO>> findMovieScreeningsOfTheLastWeek( ) {
+        Set<MovieScreeningDTO> movieScreenings = screeningService.findMovieScreeningsOfTheLastWeek();
         return ResponseEntity.ok(movieScreenings);
     }
 

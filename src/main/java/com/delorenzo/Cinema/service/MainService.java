@@ -1,12 +1,11 @@
 package com.delorenzo.Cinema.service;
 
-import com.delorenzo.Cinema.dto.NewMovie;
+import com.delorenzo.Cinema.dto.NewMovieDTO;
 import com.delorenzo.Cinema.entity.Movie;
-import com.delorenzo.Cinema.entity.Week;
+import com.delorenzo.Cinema.entity.Screening;
 import com.delorenzo.Cinema.exception.DataRetrievingFromExcelException;
 import com.delorenzo.Cinema.logic.Scheduler;
 import com.delorenzo.Cinema.repository.MovieRepository;
-import com.delorenzo.Cinema.repository.WeekRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -20,25 +19,23 @@ public class MainService {
 
     private static final Logger logger = LoggerFactory.getLogger(MainService.class);
     private final MoviesFromExcelService moviesFromExcel;
-    private final WeekRepository weekRepository;
     private final MovieRepository movieRepository;
     private final Scheduler imaxScheduler;
     private final Scheduler regularScheduler;
     private final MovieService movieService;
-    private final WeekService weekService;
+    private final ScreeningService screeningService;
 
     public MainService(
             MoviesFromExcelService moviesFromExcel,
-            WeekRepository weekRepository, MovieRepository movieRepository,
+            MovieRepository movieRepository,
             Scheduler imaxScheduler,
-            Scheduler regularScheduler, MovieService movieService, WeekService weekService) {
+            Scheduler regularScheduler, MovieService movieService, ScreeningService screeningService) {
         this.moviesFromExcel = moviesFromExcel;
-        this.weekRepository = weekRepository;
         this.movieRepository = movieRepository;
         this.imaxScheduler = imaxScheduler;
         this.regularScheduler = regularScheduler;
         this.movieService = movieService;
-        this.weekService = weekService;
+        this.screeningService = screeningService;
     }
 
     //  first scheduling process with screenings/week saving ( from movies in db )
@@ -50,26 +47,26 @@ public class MainService {
         imaxScheduler.scheduling(imaxMovies);
         regularScheduler.scheduling(regularMovies);
 
-        List<Scheduler> schedulers = new ArrayList<>();
-        schedulers.add(imaxScheduler);
-        schedulers.add(regularScheduler);
 
         LocalDate monday = LocalDate.of(2025, 3, 24);
-        Week week = weekService.buildAWeek(schedulers, monday);
-        weekRepository.save(week);
+
+        // Salvare le proiezioni prese dal db
+        screeningService.defineScreeningsFirstTime(monday);
+
+
     }
 
 
-    //  second scheduling process with screenings/week saving ( from movies in file excel )
+    // To Be Done
     public void weeklyBatch(String fileName) throws DataRetrievingFromExcelException {
 
         logger.info("Weekly Batch process");
         try {
-            List<NewMovie> newMovies = moviesFromExcel.readFile(fileName);
+            List<NewMovieDTO> newMovies = moviesFromExcel.readFile(fileName);
             List<Movie> regularMovies = new ArrayList<>();
             List<Movie> imaxMovies = new ArrayList<>();
 
-            for (NewMovie newMovie : newMovies) {
+            for (NewMovieDTO newMovie : newMovies) {
                 Movie movie = movieService.saveMovie(newMovie);
                 if (movie.isImax())
                     imaxMovies.add(movie);
@@ -79,12 +76,17 @@ public class MainService {
 
             imaxScheduler.scheduling(imaxMovies);
             regularScheduler.scheduling(regularMovies);
-            List<Scheduler> schedulers = new ArrayList<>();
-            schedulers.add(imaxScheduler);
-            schedulers.add(regularScheduler);
+
+
+            LocalDate today = LocalDate.of(2025, 3, 29);
             LocalDate monday = LocalDate.of(2025, 3, 31);
-            Week week = weekService.buildAWeek(schedulers, monday);
-            weekRepository.save(week);
+
+
+            // Salvare le proiezioni
+            screeningService.defineScreenings(today,monday);
+
+
+
 
         } catch (IOException e) {
             throw new DataRetrievingFromExcelException();
