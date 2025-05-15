@@ -15,11 +15,4 @@ public class Slot {
     public Slot() {
     }
 
-    @Override
-    public String toString() {
-        return "Slot{" +
-                "screening=" + screening +
-                ", room=" + room +
-                '}';
-    }
 }

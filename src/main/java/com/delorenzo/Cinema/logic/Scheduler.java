@@ -13,11 +13,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Getter
 public class Scheduler {
     private static final Logger logger = LoggerFactory.getLogger(Scheduler.class);
-    @Getter
-    private String name;
-    @Getter
+    private final String name;
     private final Slot[] slots;
     private int freeRooms;
 

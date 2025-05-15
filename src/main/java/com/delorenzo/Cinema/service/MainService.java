@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.*;
 
 @Service
@@ -38,34 +37,25 @@ public class MainService {
         this.screeningService = screeningService;
     }
 
-    //  first scheduling process with screenings/week saving ( from movies in db )
+
     public void initializationBatch() {
 
         List<Movie> regularMovies = movieRepository.findMovieByImax(false);
         List<Movie> imaxMovies = movieRepository.findMovieByImax(true);
-
         imaxScheduler.scheduling(imaxMovies);
         regularScheduler.scheduling(regularMovies);
-
-
-        LocalDate monday = LocalDate.of(2025, 3, 24);
-
-        // Salvare le proiezioni prese dal db
-        screeningService.defineScreeningsFirstTime(monday);
-
-
+        List<Screening> screeningsToBeSaved = screeningService.getProgrammedScreenings();
+        screeningService.saveScreenings(screeningsToBeSaved);
     }
 
 
     // To Be Done
     public void weeklyBatch(String fileName) throws DataRetrievingFromExcelException {
-
         logger.info("Weekly Batch process");
         try {
             List<NewMovieDTO> newMovies = moviesFromExcel.readFile(fileName);
             List<Movie> regularMovies = new ArrayList<>();
             List<Movie> imaxMovies = new ArrayList<>();
-
             for (NewMovieDTO newMovie : newMovies) {
                 Movie movie = movieService.saveMovie(newMovie);
                 if (movie.isImax())
@@ -73,24 +63,15 @@ public class MainService {
                 else
                     regularMovies.add(movie);
             }
-
             imaxScheduler.scheduling(imaxMovies);
             regularScheduler.scheduling(regularMovies);
 
-
-            LocalDate today = LocalDate.of(2025, 3, 29);
-            LocalDate monday = LocalDate.of(2025, 3, 31);
-
-
             // Salvare le proiezioni
-            screeningService.defineScreenings(today,monday);
-
-
-
-
+            //screeningService.defineScreenings();
         } catch (IOException e) {
             throw new DataRetrievingFromExcelException();
         }
     }
+
 
 }

@@ -15,17 +15,4 @@ public class NewMovieDTO {
     public NewMovieDTO() {
 
     }
-
-    @Override
-    public String toString() {
-        return "NewMovie{" +
-                "title='" + title + '\'' +
-                ", director='" + director + '\'' +
-                ", year=" + year +
-                ", duration=" + duration +
-                ", imax=" + imax +
-                ", value=" + value +
-                ", room='" + room + '\'' +
-                '}';
-    }
 }

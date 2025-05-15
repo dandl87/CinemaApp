@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -19,34 +20,25 @@ import java.util.Set;
 @RequestMapping("/api/")
 public class MainRestController {
 
-
+    private static final Logger logger = LoggerFactory.getLogger(MainRestController.class);
     private final MovieService movieService;
     private final ScreeningService screeningService;
-
-    private static final Logger logger = LoggerFactory.getLogger(MainRestController.class);
 
     public MainRestController(MovieService movieService, ScreeningService screeningService) {
         this.movieService = movieService;
         this.screeningService = screeningService;
     }
 
-
     @GetMapping("/movie-screenings/week")
     public ResponseEntity<Set<MovieScreeningDTO>> findMovieScreeningsOfAWeek(@RequestParam String day) {
         logger.info("movies of {}", day);
-        Set<MovieScreeningDTO> movieScreenings = screeningService.findMovieScreeningsOfTheWeek(day);
-        return ResponseEntity.ok(movieScreenings);
+        return ResponseEntity.ok(new HashSet<>());
     }
 
     @GetMapping("/movie-screenings/last-week")
-    public ResponseEntity<Set<MovieScreeningDTO>> findMovieScreeningsOfTheLastWeek( ) {
-        Set<MovieScreeningDTO> movieScreenings = screeningService.findMovieScreeningsOfTheLastWeek();
-        return ResponseEntity.ok(movieScreenings);
+    public ResponseEntity<Set<MovieScreeningDTO>> findMovieScreeningsOfTheLastWeek() {
+        return ResponseEntity.ok(new HashSet<>());
     }
-
-
-
-    // extra
 
     @PostMapping("/movies/find-by-example")
     public List<Movie> findMovie(
@@ -60,15 +52,11 @@ public class MainRestController {
         return movieService.findMovieByTitle(title);
     }
 
-
     @GetMapping("/movies/search")
     public ResponseEntity<List<Movie>> searchMovie(
             @RequestParam String title) {
         List<Movie> movies = movieService.findMovieTitledLike(title);
         return ResponseEntity.ok(movies);
     }
-
-
-
 
 }
