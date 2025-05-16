@@ -46,7 +46,6 @@ public class Scheduler {
         removeScreenings();
         List<Screening> screenings = Utils.createScreenings(movies);
 
-
         // Inserting on empty slot first
         for (Slot slot : slots) {
             Optional<Screening> screeningMaxValue = Utils.extractScreeningWithMaxValue(screenings);
@@ -59,6 +58,7 @@ public class Scheduler {
                 logger.info("Screening of movie {} assigned to empty room  ", screeningMaxValue.get().getMovie().getTitle());
             }
         }
+
         // and then the remainings ones to replace those of lesser value
         for (Slot slot : slots) {
             Optional<Screening> screeningMaxValue = Utils.extractScreeningWithMaxValue(screenings);

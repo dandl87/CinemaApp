@@ -8,6 +8,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
+
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,12 +19,25 @@ import static org.springframework.data.domain.ExampleMatcher.matching;
 @Service
 public class MovieService {
 
+    private final MoviesFromExcelService moviesFromExcelService;
     private final MovieRepository movieRepository;
     private static final Logger logger = LoggerFactory.getLogger(MovieService.class);
 
-    public MovieService(MovieRepository movieRepository) {
+    public MovieService(MoviesFromExcelService moviesFromExcelService, MovieRepository movieRepository) {
+        this.moviesFromExcelService = moviesFromExcelService;
         this.movieRepository = movieRepository;
     }
+
+    public List<Movie> getMoviesFromExcel(String fileName) throws IOException {
+        List<NewMovieDTO> newMovies = moviesFromExcelService.readFile(fileName);
+        List<Movie> movies = new ArrayList<>();
+        for (NewMovieDTO newMovie : newMovies) {
+            Movie movie = saveMovie(newMovie);
+            movies.add(movie);
+        }
+        return movies;
+    }
+
 
     private Movie createAMovie(NewMovieDTO newMovie) {
         Movie movie = new Movie();
@@ -34,12 +50,14 @@ public class MovieService {
         return movie;
     }
 
-    public Movie saveMovie(NewMovieDTO newMovie) {
+    private Movie saveMovie(NewMovieDTO newMovie) {
         Movie movie = createAMovie(newMovie);
         movieRepository.save(movie);
         logger.info("Movie {} created", movie.getTitle());
         return movie;
     }
+
+
 
     public List<Movie> findMovie(Movie movie) {
         Example<Movie> example = Example.of(movie);

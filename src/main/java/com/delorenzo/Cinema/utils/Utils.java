@@ -14,27 +14,6 @@ import java.util.*;
 
 public class Utils {
 
-    public static Optional<Set<MovieScreeningDTO>> createMovieScreeningsFromScreenings(Set<Screening> screenings) {
-        Set<MovieScreeningDTO> movieScreenings = new HashSet<>();
-        for (Screening screening : screenings) {
-            Movie movie = screening.getMovie();
-            Room room = screening.getRoom();
-            MovieScreeningDTO movieScreening = new MovieScreeningDTO();
-            movieScreening.setRoom(room.getName());
-            movieScreening.setTitle(movie.getTitle());
-            movieScreening.setYear(movie.getYear());
-            movieScreening.setDuration(movie.getDuration());
-            movieScreening.setSeatsAvailable(room.getSeats());
-            movieScreenings.add(movieScreening);
-        }
-        if (!movieScreenings.isEmpty()) {
-            return Optional.of(movieScreenings);
-        } else {
-            return Optional.empty();
-        }
-    }
-
-
     public static LocalDate findTheMondayOfTheWeek(LocalDate date) {
         DayOfWeek day = date.getDayOfWeek();
         return switch (day) {
@@ -107,6 +86,21 @@ public class Utils {
         return roomScreeningDTOS;
     }
 
+    public static List<Screening> getScreeningsToBeSavedPreparedForDb(List<Screening> screeningsOfTheWeek,List<Screening> screeningsToBeSaved) {
+        List<Screening> screeningsToBeSavedPreparedForDb = new ArrayList<>();
+
+        screeningsToBeSaved.forEach(screening ->
+                {
+                    Optional<Screening> screeningOpt = Utils.extractScreeningFromAList(screening, screeningsOfTheWeek);
+                    if (screeningOpt.isPresent()) {
+                        screeningOpt.get().setNumberOfWeeks(screeningOpt.get().getNumberOfWeeks() + 1);
+                        screeningsToBeSavedPreparedForDb.add(screeningOpt.get());
+                    } else
+                        screeningsToBeSavedPreparedForDb.add(screening);
+                }
+        );
+        return screeningsToBeSavedPreparedForDb;
+    }
 
 
 }
