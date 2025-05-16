@@ -35,7 +35,7 @@ public class MainService {
 
 
     public void batch(String fileName) {
-        logger.info("Batch process started");
+        logger.info("--- Batch process started ---");
         List<Movie> movies;
         try {
             movies = movieService.getMoviesFromExcel(fileName);
@@ -43,11 +43,11 @@ public class MainService {
             throw new RuntimeException(e);
         }
         schedulingService.scheduleNewMovies(movies);
-        logger.info("Batch process ended");
+        logger.info("--- Batch process ended ---");
     }
 
     public void sunday() {
-        logger.info("Sunday process started");
+        logger.info("--- Sunday process started ---");
         LocalDate lastMonday = Utils.findTheMondayOfTheWeek(currentDay.getCurrentDate());
         schedulingService.incrementSchedulerMoviesNumberOfWeeks();
         List<Screening> screeningsToBeSaved = screeningService.getProgrammedScreenings();
@@ -55,10 +55,12 @@ public class MainService {
         List<Screening> screeningsToBeSavedPreparedForDb = Utils.getScreeningsToBeSavedPreparedForDb(screeningsOfTheWeek, screeningsToBeSaved);
         screeningService.saveScreenings(screeningsToBeSavedPreparedForDb);
         updateRuntime();
-        logger.info("Sunday process started");
+        logger.info("--- Sunday process ended ---");
     }
 
     private void updateRuntime(){
+        logger.info("updating current Date: {}", currentDay.getCurrentDate());
+        logger.info("updating schedulers");
         LocalDate lastMonday = Utils.findTheMondayOfTheWeek(currentDay.getCurrentDate());
         schedulingService.removeScreenings();
         currentDay.updateDate(lastMonday.plusWeeks(1));

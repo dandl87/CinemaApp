@@ -5,11 +5,13 @@ import com.delorenzo.Cinema.logic.Scheduler;
 import com.delorenzo.Cinema.repository.RoomRepository;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Component
+@Order(1)
 public class SchedulerDataLoader implements ApplicationRunner {
 
     private final Scheduler imaxScheduler;

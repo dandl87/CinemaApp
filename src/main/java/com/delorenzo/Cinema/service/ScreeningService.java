@@ -6,6 +6,8 @@ import com.delorenzo.Cinema.entity.Screening;
 import com.delorenzo.Cinema.logic.Scheduler;
 import com.delorenzo.Cinema.repository.ScreeningRepository;
 import com.delorenzo.Cinema.utils.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -14,10 +16,11 @@ import java.util.*;
 @Service
 public class ScreeningService {
 
-    ScreeningRepository screeningRepository;
-    Scheduler imaxScheduler;
-    Scheduler regularScheduler;
-    DateHolder currentDay;
+    private static final Logger logger = LoggerFactory.getLogger(ScreeningService.class);
+    private final ScreeningRepository screeningRepository;
+    private final Scheduler imaxScheduler;
+    private final Scheduler regularScheduler;
+    private final DateHolder currentDay;
 
 
     public ScreeningService(ScreeningRepository screeningRepository, Scheduler imaxScheduler, Scheduler regularScheduler, DateHolder currentDay) {
@@ -39,6 +42,7 @@ public class ScreeningService {
     }
 
     public void saveScreenings(List<Screening> screeningsToBeSaved) {
+        logger.info("saving screenings scheduled for next week");
         LocalDate nextMonday = Utils.findTheMondayOfTheWeek(currentDay.getCurrentDate().plusWeeks(1));
         for (Screening screening : screeningsToBeSaved) {
             if(screening.getFirstDay() == null)

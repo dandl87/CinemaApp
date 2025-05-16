@@ -1,12 +1,9 @@
 package com.delorenzo.Cinema.utils;
 
-import com.delorenzo.Cinema.dto.MovieScreeningDTO;
 import com.delorenzo.Cinema.dto.RoomScreeningDTO;
 import com.delorenzo.Cinema.entity.Movie;
-import com.delorenzo.Cinema.entity.Room;
 import com.delorenzo.Cinema.entity.Screening;
 import com.delorenzo.Cinema.logic.Scheduler;
-
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.*;
@@ -35,7 +32,6 @@ public class Utils {
         }
         return Optional.empty();
     }
-
 
 
     public static List<Screening> createScreenings(List<Movie> movies) {
@@ -86,9 +82,8 @@ public class Utils {
         return roomScreeningDTOS;
     }
 
-    public static List<Screening> getScreeningsToBeSavedPreparedForDb(List<Screening> screeningsOfTheWeek,List<Screening> screeningsToBeSaved) {
+    public static List<Screening> getScreeningsToBeSavedPreparedForDb(List<Screening> screeningsOfTheWeek, List<Screening> screeningsToBeSaved) {
         List<Screening> screeningsToBeSavedPreparedForDb = new ArrayList<>();
-
         screeningsToBeSaved.forEach(screening ->
                 {
                     Optional<Screening> screeningOpt = Utils.extractScreeningFromAList(screening, screeningsOfTheWeek);

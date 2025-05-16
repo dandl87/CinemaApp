@@ -29,6 +29,7 @@ public class MovieService {
     }
 
     public List<Movie> getMoviesFromExcel(String fileName) throws IOException {
+        logger.info("Getting movies from excel");
         List<NewMovieDTO> newMovies = moviesFromExcelService.readFile(fileName);
         List<Movie> movies = new ArrayList<>();
         for (NewMovieDTO newMovie : newMovies) {

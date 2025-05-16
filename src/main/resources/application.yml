@@ -2,13 +2,6 @@ spring:
   application:
     name: cinema
 
-
-  devtools:
-    livereload:
-      enabled: true
-    restart:
-      poll-interval: "1000ms"
-      quiet-period: "100ms"
   thymeleaf:
     cache: false
 
@@ -17,33 +10,43 @@ spring:
     username: user
     password: password
     driver-class-name: org.postgresql.Driver
+
   sql:
     init:
       mode: always
 
   jpa:
-    show-sql: true
     defer-datasource-initialization: true
     hibernate:
       ddl-auto: create-drop
     properties:
       hibernate:
-        format_sql: true
-        dialect: org.hibernate.dialect.PostgreSQLDialect
-
-  logging:
-    level:
-      org:
-        hibernate:
-          SQL: DEBUG
-          type:
-            descriptor:
-              sql:
-                BasicBinder: TRACE
-        testcontainers: INFO
+        show_sql: false
 
   servlet:
     multipart:
       max-file-size: 128KB
       max-request-size: 128KB
+
+logging:
+  level:
+    org:
+      springframework:
+        boot: OFF
+        web:
+          servlet:
+            mvc:
+              method:
+                annotation:
+                  RequestResponseBodyMethodProcessor: WARN
+            DispatcherServlet: WARN
+      hibernate:
+        Version: OFF
+        boot: OFF
+    com:
+      zaxxer:
+        hikari: OFF
+
+
+
 

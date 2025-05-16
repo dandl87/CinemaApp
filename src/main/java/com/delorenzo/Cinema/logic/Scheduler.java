@@ -32,8 +32,8 @@ public class Scheduler {
 
     public void setRoomsToSlots(List<Room> rooms) {
         logger.info("Scheduler {} room assignment " +
-                "\n numer of rooms {} " +
-                "\n number of slots {} ", name, rooms.size(), getSlots());
+                "\n number of rooms {} " +
+                "\n number of slots {} ", name, rooms.size(), getSlots().length);
         if (getSlots().length != rooms.size())
             throw new RoomsSlotsMismatchException();
         for (int i = 0; i < slots.length; i++) {

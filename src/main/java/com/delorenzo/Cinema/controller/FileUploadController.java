@@ -1,6 +1,5 @@
 package com.delorenzo.Cinema.controller;
 
-import com.delorenzo.Cinema.exception.DataRetrievingFromExcelException;
 import com.delorenzo.Cinema.exception.StorageFileNotFoundException;
 import com.delorenzo.Cinema.service.MainService;
 import com.delorenzo.Cinema.service.StorageService;
@@ -40,8 +39,10 @@ public class FileUploadController {
     }
 
     @PostMapping("/files/insert")
-    public String handleFileUpload(@RequestParam("file") MultipartFile file,
-            RedirectAttributes redirectAttributes) throws DataRetrievingFromExcelException {
+    public String handleFileUpload(
+            @RequestParam("file") MultipartFile file,
+            RedirectAttributes redirectAttributes)
+    {
 
         logger.info(file.getOriginalFilename());
         storageService.store(file);
@@ -51,7 +52,7 @@ public class FileUploadController {
     }
 
     @ExceptionHandler(StorageFileNotFoundException.class)
-    public ResponseEntity<?> handleStorageFileNotFound(StorageFileNotFoundException exc){
+    public ResponseEntity<?> handleStorageFileNotFound(){
         return ResponseEntity.notFound().build();
     }
 
