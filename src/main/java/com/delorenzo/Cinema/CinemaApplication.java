@@ -33,8 +33,8 @@ public class CinemaApplication {
         SchedulingService schedulingService = context.getBean(SchedulingService.class);
         ScreeningService screeningService = context.getBean(ScreeningService.class);
         MovieRepository movieRepository = context.getBean(MovieRepository.class);
-        Scheduler imaxScheduler = context.getBean("imax", Scheduler.class);
-        Scheduler regularScheduler = context.getBean("regular", Scheduler.class);
+        Scheduler imaxScheduler = context.getBean("imaxScheduler", Scheduler.class);
+        Scheduler regularScheduler = context.getBean("regularScheduler", Scheduler.class);
         StorageService storageService = context.getBean(StorageService.class);
 
         storageService.deleteAll();

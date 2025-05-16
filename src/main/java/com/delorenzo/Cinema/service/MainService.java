@@ -57,7 +57,7 @@ public class MainService {
         updateRuntime();
         logger.info("Sunday process started");
     }
- 
+
     private void updateRuntime(){
         LocalDate lastMonday = Utils.findTheMondayOfTheWeek(currentDay.getCurrentDate());
         schedulingService.removeScreenings();
