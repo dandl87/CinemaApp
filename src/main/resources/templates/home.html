@@ -28,6 +28,8 @@
             font-weight: bold;
         }
         nav {
+            display: flex;
+            align-items: center;
             background-color: #f0f0f0;
             padding: 10px;
         }
@@ -46,8 +48,11 @@
 <nav>
     <a style="text-decoration: none; color: inherit;"><i class="fa-solid fa-house"></i></a>
     <a th:href="@{/movies}" style="text-decoration: none; color: inherit;"><i class="fa-solid fa-film"></i> Film</a>
-    <a th:href="@{/movies/upload}" style="text-decoration: none; color: inherit;"><i class="fa-solid fa-plus"></i> Inserisci file</a>
+    <a th:href="@{/movies/upload}" style="text-decoration: none; color: inherit;"><i class="fa-solid fa-plus"></i> file</a>
     <a th:href="@{/files}" style="text-decoration: none; color: inherit;"><i class="fa-solid fa-list"></i> lista file</a>
+    <div style="flex-grow: 1;"></div>
+    <h4 th:text = " ${currentDay} " style="text-decoration: none; margin-right: 1rem;color: inherit;"> Data Corrente </h4>
+    <a th:href="@{/sunday}" style="text-decoration: none; color: inherit;"><i class="fa-solid fa-sun"></i> sunday</a>
 </nav>
 
 <div>
@@ -65,18 +70,19 @@
     </tr>
     </thead>
     <tbody>
-    <tr th:each="room : ${roomList}">
-        <td th:text="${room.roomName}">Titolo</td>
-        <td th:text="${room.movieTitle}">Direttore</td>
-        <td th:text="${room.duration}">Anno</td>
-        <td th:text="${room.seatsAvailable}">120</td>
-        <td th:text="${room.imax} ? 'SI' : 'NO'">  </td>
+    <tr th:each="room : ${screeningList}">
+        <td th:text="${room.roomName}">Sala</td>
+        <td th:text="${room.movieTitle}">Film</td>
+        <td th:text="${room.duration}">Durata</td>
+        <td th:text="${room.seatsAvailable}">Posti</td>
+        <td th:text="${room.imax} ? 'SI' : 'NO'">IMAX  </td>
     </tr>
     </tbody>
 </table>
 
 <div>
     <h1 style="text-align:center;" th:text="${nextWeek}">I Film In Programmazione la prossima settimana</h1>
+    <h4 style="text-align:center;">Potrebbe cambiare</h4>
 </div>
 
 <table>
@@ -91,10 +97,10 @@
     </thead>
     <tbody>
     <tr th:each="room : ${roomListNextWeek}">
-        <td th:text="${room.roomName}">Titolo</td>
-        <td th:text="${room.movieTitle}">Direttore</td>
-        <td th:text="${room.duration}">Anno</td>
-        <td th:text="${room.seatsAvailable}">120</td>
+        <td th:text="${room.roomName}">Sala</td>
+        <td th:text="${room.movieTitle}">Film</td>
+        <td th:text="${room.duration}">Durata</td>
+        <td th:text="${room.seatsAvailable}">Posti</td>
         <td th:text="${room.imax} ? 'SI' : 'NO'">  </td>
     </tr>
     </tbody>

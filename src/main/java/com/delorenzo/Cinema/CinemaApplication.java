@@ -28,6 +28,7 @@ public class CinemaApplication {
         storageService.init();
 
         mainService.initializationBatch();
+        mainService.initializationSunday();
 
 
     }

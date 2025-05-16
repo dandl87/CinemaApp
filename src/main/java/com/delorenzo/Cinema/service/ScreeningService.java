@@ -1,5 +1,6 @@
 package com.delorenzo.Cinema.service;
 
+import com.delorenzo.Cinema.conf.DateHolder;
 import com.delorenzo.Cinema.dto.RoomScreeningDTO;
 import com.delorenzo.Cinema.entity.Screening;
 import com.delorenzo.Cinema.logic.Scheduler;
@@ -16,19 +17,32 @@ public class ScreeningService {
     ScreeningRepository screeningRepository;
     Scheduler imaxScheduler;
     Scheduler regularScheduler;
+    DateHolder currentDay;
 
 
-    public ScreeningService(ScreeningRepository screeningRepository, Scheduler imaxScheduler, Scheduler regularScheduler) {
+    public ScreeningService(ScreeningRepository screeningRepository, Scheduler imaxScheduler, Scheduler regularScheduler, DateHolder currentDay) {
         this.screeningRepository = screeningRepository;
         this.imaxScheduler = imaxScheduler;
         this.regularScheduler = regularScheduler;
+        this.currentDay = currentDay;
+    }
+
+    public void saveInitialScreenings(List<Screening> screeningsToBeSaved) {
+        LocalDate today =  currentDay.getCurrentDate();
+        LocalDate lastMonday = Utils.findTheMondayOfTheWeek(today);
+        for (Screening screening : screeningsToBeSaved) {
+            screening.setNumberOfWeeks(1);
+            screening.setFirstDay(lastMonday);
+            screeningRepository.save(screening);
+        }
+
     }
 
     public void saveScreenings(List<Screening> screeningsToBeSaved) {
-        LocalDate today = LocalDate.now();
-        LocalDate lastMonday = Utils.findTheMondayOfTheWeek(today);
+        LocalDate nextMonday = Utils.findTheMondayOfTheWeek(currentDay.getCurrentDate().plusWeeks(1));
         for (Screening screening : screeningsToBeSaved) {
-            screening.setFirstDay(lastMonday);
+            if(screening.getFirstDay() == null)
+                screening.setFirstDay(nextMonday);
             screeningRepository.save(screening);
         }
 
@@ -57,15 +71,16 @@ public class ScreeningService {
 
         List<Screening> screenings = getScreeningsOfMonday(monday);
         return Utils.getRoomScreeningDTOList(screenings);
-
     }
 
-    private List<Screening> getScreeningsOfMonday(LocalDate monday) {
+    public List<Screening> getScreeningsOfMonday(LocalDate monday) {
         List<Screening> screenings = new ArrayList<>();
         List<Screening> screeningsTemp = screeningRepository.findScreeningByFirstDayAndNumberOfWeeks(monday, 1);
         List<Screening> screeningsTemp2 = screeningRepository.findScreeningByFirstDayAndNumberOfWeeks(monday.minusDays(7), 2);
+        List<Screening> screeningsTemp3 = screeningRepository.findScreeningByFirstDayAndNumberOfWeeks(monday.minusDays(14), 3);
         screenings.addAll(screeningsTemp);
         screenings.addAll(screeningsTemp2);
+        screenings.addAll(screeningsTemp3);
         return screenings;
 
     }

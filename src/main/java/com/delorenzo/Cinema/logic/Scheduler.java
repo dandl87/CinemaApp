@@ -75,7 +75,7 @@ public class Scheduler {
 
     }
 
-    private void removeScreenings() {
+    public void removeScreenings() {
         for (Slot slot : slots) {
             Optional<Screening> screening = Optional.ofNullable(slot.getScreening());
             if (screening.isPresent()) {

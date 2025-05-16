@@ -6,6 +6,8 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <style>
     nav {
+      display: flex;
+      align-items: center;
       background-color: #f0f0f0;
       padding: 10px;
     }
@@ -43,10 +45,13 @@
 </head>
 <body>
 <nav>
-  <a th:href="@{/}" style="text-decoration: none; color: inherit;"><i class="fa-solid fa-house-crack"></i></a>
+  <a th:href="@{/}"style="text-decoration: none; color: inherit;"><i class="fa-solid fa-house-crack"></i></a>
   <a  style="text-decoration: none; color: inherit;"><i class="fa-solid fa-film"></i> Film</a>
-  <a th:href="@{/movies/upload}" style="text-decoration: none; color: inherit;"><i class="fa-solid fa-plus"></i> Inserisci file</a>
+  <a th:href="@{/movies/upload}" style="text-decoration: none; color: inherit;"><i class="fa-solid fa-plus"></i> file</a>
   <a th:href="@{/files}" style="text-decoration: none; color: inherit;"><i class="fa-solid fa-list"></i> lista file</a>
+  <div style="flex-grow: 1;"></div>
+  <h4 th:text = " ${currentDay} " style="text-decoration: none; margin-right: 1rem;color: inherit;"> Data Corrente </h4>
+  <a th:href="@{/sunday}" style="text-decoration: none; color: inherit;"><i class="fa-solid fa-sun"></i> sunday</a>
 </nav>
 <h1 style="text-align:center;">Lista dei Film</h1>
 

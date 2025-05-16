@@ -1,5 +1,6 @@
 package com.delorenzo.Cinema;
 
+import com.delorenzo.Cinema.conf.DateHolder;
 import com.delorenzo.Cinema.conf.SchedulerDataLoader;
 import com.delorenzo.Cinema.conf.StorageProperties;
 import com.delorenzo.Cinema.entity.Movie;
@@ -20,6 +21,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -44,6 +46,8 @@ class IntegrationTests implements PostgreSQLContainerInitializer{
 	StorageProperties storageProperties;
 	@Autowired
 	ScreeningService screeningService;
+	@Autowired
+	DateHolder currentDay;
 
 
 	@BeforeAll
@@ -81,6 +85,7 @@ class IntegrationTests implements PostgreSQLContainerInitializer{
 		List<Scheduler> schedulers = schedulerInit();
 		Optional<Scheduler> imaxScheduler = Utils.getSchedulerByName(schedulers,"imax");
 		Optional<Scheduler> regularScheduler = Utils.getSchedulerByName(schedulers,"regular");
+
 		MovieService movieService = new MovieService(movieRepository);
 		StorageService storageService = new FileSystemStorageService(storageProperties);
 		storageService.deleteAll();
@@ -92,7 +97,8 @@ class IntegrationTests implements PostgreSQLContainerInitializer{
 				imaxScheduler.get(),
 				regularScheduler.get(),
 				movieService,
-				screeningService);
+				screeningService,
+				currentDay);
 
 		mainService.initializationBatch();
 		List<Screening> screenings = screeningRepository.findAll();
@@ -111,6 +117,8 @@ class IntegrationTests implements PostgreSQLContainerInitializer{
 		return schedulers;
 
 	}
+
+
 
 
 

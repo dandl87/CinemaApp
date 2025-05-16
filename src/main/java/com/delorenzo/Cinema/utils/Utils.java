@@ -37,7 +37,7 @@ public class Utils {
 
     public static LocalDate findTheMondayOfTheWeek(LocalDate date) {
         DayOfWeek day = date.getDayOfWeek();
-        LocalDate result = switch (day) {
+        return switch (day) {
             case TUESDAY -> date.minusDays(1);
             case WEDNESDAY -> date.minusDays(2);
             case THURSDAY -> date.minusDays(3);
@@ -46,7 +46,6 @@ public class Utils {
             case SUNDAY -> date.minusDays(6);
             default -> date;
         };
-        return result;
     }
 
     public static Optional<Scheduler> getSchedulerByName(List<Scheduler> schedulers, String name) {
@@ -58,12 +57,14 @@ public class Utils {
         return Optional.empty();
     }
 
+
+
     public static List<Screening> createScreenings(List<Movie> movies) {
         List<Screening> screenings = new ArrayList<>();
         for (Movie movie : movies) {
             Screening screening = new Screening();
             screening.setMovie(movie);
-            screening.setNumberOfWeeks(1);
+            screening.setNumberOfWeeks(0);
             screenings.add(screening);
         }
         screenings.sort(new ScreeningComparator());

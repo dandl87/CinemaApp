@@ -46,7 +46,7 @@ public class FileUploadController {
         logger.info(file.getOriginalFilename());
         storageService.store(file);
         redirectAttributes.addFlashAttribute("message", "File "+file.getOriginalFilename()+" uploaded successfully!");
-        mainService.weeklyBatch(file.getOriginalFilename());
+        mainService.batch(file.getOriginalFilename());
         return "redirect:/files";
     }
 
