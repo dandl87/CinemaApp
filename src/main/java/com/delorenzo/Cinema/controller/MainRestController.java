@@ -2,7 +2,6 @@ package com.delorenzo.Cinema.controller;
 
 import com.delorenzo.Cinema.conf.DateHolder;
 import com.delorenzo.Cinema.dto.MovieDTO;
-import com.delorenzo.Cinema.dto.MovieScreeningDTO;
 import com.delorenzo.Cinema.dto.RoomScreeningDTO;
 import com.delorenzo.Cinema.entity.Movie;
 import com.delorenzo.Cinema.service.MovieService;
@@ -12,6 +11,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -64,9 +64,12 @@ public class MainRestController {
     }
 
     @GetMapping("/movies/find-by-title")
-    public Optional<MovieDTO> findMovie(
+    public ResponseEntity<MovieDTO> findMovie(
             @RequestParam String title) {
-        return movieService.findMovieByTitle(title);
+        HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.add("error", "Movie Not Found");
+        Optional<MovieDTO> movie = movieService.findMovieByTitle(title);
+        return movie.map(ResponseEntity::ok).orElseGet(() -> new ResponseEntity<>(new MovieDTO(), responseHeaders, 404));
     }
 
 }
