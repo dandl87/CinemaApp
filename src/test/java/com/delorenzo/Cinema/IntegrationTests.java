@@ -1,30 +1,22 @@
 package com.delorenzo.Cinema;
 
 import com.delorenzo.Cinema.conf.DateHolder;
-import com.delorenzo.Cinema.conf.SchedulerDataLoader;
 import com.delorenzo.Cinema.conf.StorageProperties;
 import com.delorenzo.Cinema.entity.Movie;
 import com.delorenzo.Cinema.entity.Room;
-import com.delorenzo.Cinema.entity.Screening;
-import com.delorenzo.Cinema.logic.Scheduler;
 import com.delorenzo.Cinema.repository.MovieRepository;
 import com.delorenzo.Cinema.repository.RoomRepository;
 import com.delorenzo.Cinema.repository.ScreeningRepository;
 import com.delorenzo.Cinema.service.*;
-import com.delorenzo.Cinema.utils.Utils;
 import org.junit.jupiter.api.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.DefaultApplicationArguments;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.Assert.assertTrue;
 

@@ -6,9 +6,11 @@ La piattaforma backend deve rendere possibile l'inserimento di nuovi film tramit
 
 ## Funzionalità principali
 
-- Gestione delle 12 sale (10 normali, 2 IMAX)
-- Creazione e aggiornamento della programmazione settimanalmente
+
+- definizione delle sale 
+- Programmazione settimanale in base ad un valore intrinseco al film ed al numero di settimane che il film è stato in sala 
+- Inserimento nuovi film tramite file excel e form
 - Differenziazione tra sale normali e IMAX per tipo di contenuti proiettati
-- (Opzionale) API REST per interfacciamento con frontend o app mobile
+- API REST per interfacciamento con frontend o app mobile
 
 
