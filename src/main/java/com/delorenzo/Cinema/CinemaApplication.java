@@ -44,10 +44,10 @@ public class CinemaApplication {
                            MovieRepository movieRepository
     ) {
         return args -> {
+            logger.info("--- Initialization phase started ---");
             storageService.deleteAll();
             storageService.init();
             List<Movie> movies = movieRepository.findAll();
-            logger.info("--- Initialization phase started ---");
             schedulingService.scheduleNewMovies(movies);
             List<Screening> screeningsToBeSaved = screeningService.getProgrammedScreenings();
             schedulingService.incrementSchedulerMoviesNumberOfWeeks();

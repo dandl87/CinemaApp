@@ -38,28 +38,6 @@ public class MovieService {
         }
         return movies;
     }
-
-
-    private Movie createAMovie(NewMovieDTO newMovie) {
-        Movie movie = new Movie();
-        movie.setTitle(newMovie.getTitle());
-        movie.setDirector(newMovie.getDirector());
-        movie.setYear(String.valueOf(newMovie.getYear()));
-        movie.setDuration(newMovie.getDuration());
-        movie.setImax(newMovie.isImax());
-        movie.setValue(newMovie.getValue());
-        return movie;
-    }
-
-    private Movie saveMovie(NewMovieDTO newMovie) {
-        Movie movie = createAMovie(newMovie);
-        movieRepository.save(movie);
-        logger.info("Movie {} created", movie.getTitle());
-        return movie;
-    }
-
-
-
     public List<Movie> findMovie(Movie movie) {
         Example<Movie> example = Example.of(movie);
         return movieRepository.findAll(example);
@@ -84,5 +62,26 @@ public class MovieService {
     public List<Movie> findAllMovies() {
         return movieRepository.findAll();
     }
+
+    private Movie createAMovie(NewMovieDTO newMovie) {
+        Movie movie = new Movie();
+        movie.setTitle(newMovie.getTitle());
+        movie.setDirector(newMovie.getDirector());
+        movie.setYear(String.valueOf(newMovie.getYear()));
+        movie.setDuration(newMovie.getDuration());
+        movie.setImax(newMovie.isImax());
+        movie.setValue(newMovie.getValue());
+        return movie;
+    }
+
+    private Movie saveMovie(NewMovieDTO newMovie) {
+        Movie movie = createAMovie(newMovie);
+        movieRepository.save(movie);
+        logger.info("Movie {} created", movie.getTitle());
+        return movie;
+    }
+
+
+
 
 }

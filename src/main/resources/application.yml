@@ -1,3 +1,6 @@
+cinema:
+  weeks-to-live: 3
+
 spring:
   application:
     name: cinema
@@ -32,7 +35,6 @@ logging:
   level:
     org:
       springframework:
-        boot: OFF
         web:
           servlet:
             mvc:

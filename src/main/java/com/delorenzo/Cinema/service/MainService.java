@@ -18,14 +18,14 @@ public class MainService {
     private static final Logger logger = LoggerFactory.getLogger(MainService.class);
     private final MovieService movieService;
     private final ScreeningService screeningService;
-    private SchedulingService schedulingService;
+    private final SchedulingService schedulingService;
 
     private final DateHolder currentDay;
 
     public MainService(
-            MovieRepository movieRepository,
             MovieService movieService,
-            ScreeningService screeningService, SchedulingService schedulingService,
+            ScreeningService screeningService,
+            SchedulingService schedulingService,
             DateHolder currentDay) {
         this.movieService = movieService;
         this.screeningService = screeningService;

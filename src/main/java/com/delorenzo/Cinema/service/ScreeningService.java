@@ -1,5 +1,6 @@
 package com.delorenzo.Cinema.service;
 
+import com.delorenzo.Cinema.conf.ApplicationProperties;
 import com.delorenzo.Cinema.conf.DateHolder;
 import com.delorenzo.Cinema.dto.RoomScreeningDTO;
 import com.delorenzo.Cinema.entity.Screening;
@@ -21,13 +22,15 @@ public class ScreeningService {
     private final Scheduler imaxScheduler;
     private final Scheduler regularScheduler;
     private final DateHolder currentDay;
+    private final ApplicationProperties applicationProperties;
 
 
-    public ScreeningService(ScreeningRepository screeningRepository, Scheduler imaxScheduler, Scheduler regularScheduler, DateHolder currentDay) {
+    public ScreeningService(ScreeningRepository screeningRepository, Scheduler imaxScheduler, Scheduler regularScheduler, DateHolder currentDay, ApplicationProperties applicationProperties) {
         this.screeningRepository = screeningRepository;
         this.imaxScheduler = imaxScheduler;
         this.regularScheduler = regularScheduler;
         this.currentDay = currentDay;
+        this.applicationProperties = applicationProperties;
     }
 
     public void saveInitialScreenings(List<Screening> screeningsToBeSaved) {
@@ -79,12 +82,11 @@ public class ScreeningService {
 
     public List<Screening> getScreeningsOfMonday(LocalDate monday) {
         List<Screening> screenings = new ArrayList<>();
-        List<Screening> screeningsTemp = screeningRepository.findScreeningByFirstDayAndNumberOfWeeks(monday, 1);
-        List<Screening> screeningsTemp2 = screeningRepository.findScreeningByFirstDayAndNumberOfWeeks(monday.minusDays(7), 2);
-        List<Screening> screeningsTemp3 = screeningRepository.findScreeningByFirstDayAndNumberOfWeeks(monday.minusDays(14), 3);
-        screenings.addAll(screeningsTemp);
-        screenings.addAll(screeningsTemp2);
-        screenings.addAll(screeningsTemp3);
+        int numberOfWeeks = applicationProperties.getWeeksToLive();
+        for(int i = 0; i<numberOfWeeks; i++){
+            List<Screening> screeningsTemp = screeningRepository.findScreeningByFirstDayAndNumberOfWeeks(monday.minusWeeks(i), i+1);
+            screenings.addAll(screeningsTemp);
+        }
         return screenings;
 
     }
