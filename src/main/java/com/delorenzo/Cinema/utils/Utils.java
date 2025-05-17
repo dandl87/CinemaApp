@@ -1,5 +1,6 @@
 package com.delorenzo.Cinema.utils;
 
+import com.delorenzo.Cinema.dto.MovieDTO;
 import com.delorenzo.Cinema.dto.RoomScreeningDTO;
 import com.delorenzo.Cinema.entity.Movie;
 import com.delorenzo.Cinema.entity.Screening;
@@ -97,5 +98,25 @@ public class Utils {
         return screeningsToBeSavedPreparedForDb;
     }
 
+    public static MovieDTO getMovieDTOFromMovie(Movie movie){
+        MovieDTO movieDTO = new MovieDTO();
+        movieDTO.setTitle(movie.getTitle());
+        movieDTO.setDuration(movie.getDuration());
+        movieDTO.setDirector(movie.getDirector());
+        movieDTO.setValue(movie.getValue());
+        movieDTO.setYear(movie.getYear());
+        movieDTO.setScreeningsDates(movie.getScreenings());
+        return movieDTO;
+    }
+
+    public static List<MovieDTO> getMoviesDTOFromMovies(List<Movie> movies){
+        List<MovieDTO> movieDTOS = new ArrayList<>();
+        for(Movie movie : movies){
+            MovieDTO movieDTO = getMovieDTOFromMovie(movie);
+            movieDTOS.add(movieDTO);
+        }
+
+        return movieDTOS;
+    }
 
 }

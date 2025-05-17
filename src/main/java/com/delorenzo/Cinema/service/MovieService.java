@@ -1,8 +1,10 @@
 package com.delorenzo.Cinema.service;
 
+import com.delorenzo.Cinema.dto.MovieDTO;
 import com.delorenzo.Cinema.dto.NewMovieDTO;
 import com.delorenzo.Cinema.entity.Movie;
 import com.delorenzo.Cinema.repository.MovieRepository;
+import com.delorenzo.Cinema.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Example;
@@ -38,12 +40,14 @@ public class MovieService {
         }
         return movies;
     }
-    public List<Movie> findMovie(Movie movie) {
+    public List<MovieDTO> findMovie(Movie movie) {
         Example<Movie> example = Example.of(movie);
-        return movieRepository.findAll(example);
+        List<Movie> movies = movieRepository.findAll(example);
+        List<MovieDTO> moviesDTOs = Utils.getMoviesDTOFromMovies(movies);
+        return moviesDTOs;
     }
 
-    public List<Movie> findMovieTitledLike(String title) {
+    public List<MovieDTO> findMovieTitledLike(String title) {
         Movie movie = new Movie();
         movie.setTitle(title);
         ExampleMatcher matcher = matching()
@@ -52,11 +56,13 @@ public class MovieService {
                 .withIgnoreNullValues()
                 .withMatcher("title", match -> match.contains());
         Example<Movie> example = Example.of(movie, matcher);
-        return movieRepository.findAll(example);
+        List<Movie> movies = movieRepository.findAll(example);
+        return Utils.getMoviesDTOFromMovies(movies);
     }
 
-    public Optional<Movie> findMovieByTitle(String title) {
-        return movieRepository.findByTitle(title);
+    public  Optional<MovieDTO> findMovieByTitle(String title) {
+        Optional<Movie> movie = movieRepository.findByTitle(title);
+        return movie.map(Utils::getMovieDTOFromMovie);
     }
 
     public List<Movie> findAllMovies() {

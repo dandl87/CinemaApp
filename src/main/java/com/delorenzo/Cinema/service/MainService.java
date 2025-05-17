@@ -3,7 +3,6 @@ package com.delorenzo.Cinema.service;
 import com.delorenzo.Cinema.conf.DateHolder;
 import com.delorenzo.Cinema.entity.Movie;
 import com.delorenzo.Cinema.entity.Screening;
-import com.delorenzo.Cinema.repository.MovieRepository;
 import com.delorenzo.Cinema.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
