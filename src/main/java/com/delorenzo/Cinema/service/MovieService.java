@@ -16,7 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.springframework.data.domain.ExampleMatcher.matching;
+import static org.springframework.data.domain.ExampleMatcher.GenericPropertyMatchers.startsWith;
+
 
 @Service
 public class MovieService {
@@ -41,20 +42,31 @@ public class MovieService {
         return movies;
     }
     public List<MovieDTO> findMovie(Movie movie) {
-        Example<Movie> example = Example.of(movie);
+        ExampleMatcher matcher = ExampleMatcher.matching()
+                .withIgnorePaths("id")
+                .withIgnorePaths("duration")
+                .withIgnorePaths("value")
+                .withIgnorePaths("imax")
+                .withMatcher("title", startsWith().ignoreCase())
+                .withMatcher("director", startsWith().ignoreCase())
+                .withMatcher("year", startsWith().ignoreCase());
+        ;
+
+        Example<Movie> example = Example.of(movie, matcher);
         List<Movie> movies = movieRepository.findAll(example);
-        List<MovieDTO> moviesDTOs = Utils.getMoviesDTOFromMovies(movies);
-        return moviesDTOs;
+        return Utils.getMoviesDTOFromMovies(movies);
     }
 
     public List<MovieDTO> findMovieTitledLike(String title) {
         Movie movie = new Movie();
         movie.setTitle(title);
-        ExampleMatcher matcher = matching()
-                .withIgnoreCase()
-                .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING)
-                .withIgnoreNullValues()
-                .withMatcher("title", match -> match.contains());
+
+        ExampleMatcher matcher = ExampleMatcher.matching()
+                .withIgnorePaths("id")
+                .withIgnorePaths("duration")
+                .withIgnorePaths("value")
+                .withIgnorePaths("imax")
+                .withMatcher("title", startsWith().ignoreCase());
         Example<Movie> example = Example.of(movie, matcher);
         List<Movie> movies = movieRepository.findAll(example);
         return Utils.getMoviesDTOFromMovies(movies);

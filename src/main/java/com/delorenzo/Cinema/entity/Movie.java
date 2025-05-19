@@ -19,10 +19,23 @@ public class Movie{
     private boolean imax;
     private double value;
 
+
     @OneToMany(mappedBy = "movie",
                 cascade = CascadeType.PERSIST,
                 fetch = FetchType.EAGER)
     private List<Screening> screenings = new ArrayList<>();
+
+    public Movie() {
+
+    }
+
+
+    public Movie(String title, String director, String year){
+        this.title = title;
+        this.director = director;
+        this.year = year;
+
+    }
 
     @Override
     public boolean equals(Object o) {

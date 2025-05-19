@@ -2,15 +2,13 @@ package com.delorenzo.Cinema.controller;
 
 import com.delorenzo.Cinema.conf.DateHolder;
 import com.delorenzo.Cinema.dto.MovieDTO;
+import com.delorenzo.Cinema.dto.MovieToSearchDTO;
 import com.delorenzo.Cinema.dto.RoomScreeningDTO;
 import com.delorenzo.Cinema.entity.Movie;
 import com.delorenzo.Cinema.service.MovieService;
 import com.delorenzo.Cinema.service.ScreeningService;
 import com.delorenzo.Cinema.utils.Utils;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +23,6 @@ import java.util.Optional;
 @RequestMapping("/api/")
 public class MainRestController {
 
-    private static final Logger logger = LoggerFactory.getLogger(MainRestController.class);
     private final MovieService movieService;
     private final ScreeningService screeningService;
     private final DateHolder currentDay;
@@ -51,7 +48,8 @@ public class MainRestController {
 
     @PostMapping("/movies/find-by-example")
     public ResponseEntity<List<MovieDTO>> findMovie(
-            @RequestBody @Valid Movie movie) {
+            @RequestBody MovieToSearchDTO movieDTO) {
+        Movie movie = new Movie(movieDTO.getTitle(),movieDTO.getDirector(),movieDTO.getYear());
         List<MovieDTO> movies = movieService.findMovie(movie);
         return ResponseEntity.ok(movies);
     }
