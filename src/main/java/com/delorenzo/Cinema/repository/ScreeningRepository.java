@@ -11,4 +11,5 @@ public interface ScreeningRepository extends JpaRepository<Screening, Long> {
 
     List<Screening> findScreeningByFirstDayAndNumberOfWeeks(LocalDate firstDay, int numberOfWeeks);
 
+    List<Screening> findScreeningByFirstDay(LocalDate firstDay);
 }

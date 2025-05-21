@@ -36,13 +36,13 @@ public class MainRestController {
     @GetMapping("/movie-screenings/week")
     public ResponseEntity<List<RoomScreeningDTO>> findMovieScreeningsOfAWeek(@RequestParam LocalDate day) {
         LocalDate monday = Utils.findTheMondayOfTheWeek(day);
-        List<RoomScreeningDTO> week = screeningService.findMovieScreeningsOfTheWeek(monday);
+        List<RoomScreeningDTO> week = screeningService.getListOfScreeningsOfTheWeek(monday);
         return ResponseEntity.ok(week);
     }
 
     @GetMapping("/movie-screenings/last-week")
     public ResponseEntity<List<RoomScreeningDTO>> findMovieScreeningsOfTheLastWeek() {
-        List<RoomScreeningDTO> week = screeningService.findMovieScreeningsOfTheWeek(Utils.findTheMondayOfTheWeek(currentDay.getCurrentDate()));
+        List<RoomScreeningDTO> week = screeningService.getListOfScreeningsOfTheWeek(Utils.findTheMondayOfTheWeek(currentDay.getCurrentDate()));
         return ResponseEntity.ok(week);
     }
 
