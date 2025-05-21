@@ -50,13 +50,13 @@
 </nav>
 
 <div>
-    <h1 th:text="${currentDayFormatted}"> style="text-align:center;"> Settimana di Screenings</h1>
+    <h1 style="text-align:center;" th:text="${dayFormatted}"> style="text-align:center;"> Settimana di Screenings</h1>
 </div>
 
 <div style="text-align:center;">
 <h2>Change week</h2>
 <form action="/screenings" method="get">
-    <input type="date" name="data" th:value="${currentDayFormatted}" >
+    <input type="date" name="data" th:value="${dayFormatted}" >
     <button type="submit">Find Screenings</button>
 </form>
 </div>

@@ -57,15 +57,16 @@ public class MainController {
     public String getScreenings(@RequestParam(value = "data", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate day, Model model){
         LocalDate today = currentDay.getCurrentDate();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        String todayFormatted = today.format(formatter);
+        String dayFormatted = today.format(formatter);
         LocalDate monday;
         if (day==null)
-           monday = Utils.findTheMondayOfTheWeek(currentDay.getCurrentDate());
+            monday = Utils.findTheMondayOfTheWeek(currentDay.getCurrentDate());
         else
             monday = Utils.findTheMondayOfTheWeek(day);
+        dayFormatted = monday.format(formatter);
         List<RoomScreeningDTO> screenings = screeningService.getListOfScreeningsOfTheWeek(monday);
         model.addAttribute("screeningList", screenings);
-        model.addAttribute("currentDayFormatted", todayFormatted);
+        model.addAttribute("dayFormatted", dayFormatted);
         model.addAttribute("currentDay", currentDay.getCurrentDate());
         return "screeningsPage";
     }

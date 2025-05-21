@@ -77,13 +77,19 @@ public class ScreeningService {
     public List<RoomScreeningDTO> getListOfScreeningsOfTheWeek(LocalDate monday) {
 
         List<Screening> screenings = new ArrayList<>();
-        int numberOfWeeks = applicationProperties.getWeeksToLive();
         List<Screening> screeningsCreatedOnMonday  = screeningRepository.findScreeningByFirstDay(monday);
-        for(int i = 1; i<numberOfWeeks; i++){
-            List<Screening> screeningsTemp = screeningRepository.findScreeningByFirstDayAndNumberOfWeeks(monday.minusWeeks(i), i+1);
-            screenings.addAll(screeningsTemp);
-        }
+
         screenings.addAll(screeningsCreatedOnMonday);
+        List<Screening> screeningsAWeekBefore = screeningRepository.findScreeningByFirstDayAndNumberOfWeeks(monday.minusWeeks(1), 2);
+        List<Screening> screeningsAWeekBefore2 = screeningRepository.findScreeningByFirstDayAndNumberOfWeeks(monday.minusWeeks(1), 3);
+
+        screenings.addAll(screeningsAWeekBefore);
+        screenings.addAll(screeningsAWeekBefore2);
+
+        List<Screening> screeningsTwoWeekBefore = screeningRepository.findScreeningByFirstDayAndNumberOfWeeks(monday.minusWeeks(2), 3);
+        screenings.addAll(screeningsTwoWeekBefore);
+
+
         return Utils.getRoomScreeningDTOList(screenings);
     }
 
