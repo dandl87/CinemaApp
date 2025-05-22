@@ -44,13 +44,23 @@ public class MainService {
         schedulingService.scheduleNewMovies(movies);
         logger.info("--- Batch process ended ---");
     }
+// the sunday process:
+//    1. find the monday of the current week
+//    2. increment number of Week of the movies in the schedulers
+//    3. find all the screenings in the schedules
+//    4. find all the screenings in the past week
+//    5. Prepare the list of screenings for the next week
+//          if present in last week increment number of weeks
+//          if not add to the list
+//    6. save to db
+//    7. update schedulers and date
 
     public void sunday() {
         logger.info("--- Sunday process started ---");
         LocalDate lastMonday = Utils.findTheMondayOfTheWeek(currentDay.getCurrentDate());
         schedulingService.incrementSchedulerMoviesNumberOfWeeks();
         List<Screening> screeningsToBeSaved = screeningService.getProgrammedScreenings();
-        List<Screening> screeningsOfTheWeek = screeningService.getScreeningsOfMonday(lastMonday);
+        List<Screening> screeningsOfTheWeek = screeningService.getScreeningsOfLastMonday(lastMonday);
         List<Screening> screeningsToBeSavedPreparedForDb = Utils.getScreeningsToBeSavedPreparedForDb(screeningsOfTheWeek, screeningsToBeSaved);
         screeningService.saveScreenings(screeningsToBeSavedPreparedForDb);
         updateRuntime();
