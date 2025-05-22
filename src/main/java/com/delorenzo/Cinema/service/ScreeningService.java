@@ -9,6 +9,8 @@ import com.delorenzo.Cinema.repository.ScreeningRepository;
 import com.delorenzo.Cinema.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -23,14 +25,16 @@ public class ScreeningService {
     private final Scheduler regularScheduler;
     private final DateHolder currentDay;
     private final ApplicationProperties applicationProperties;
+    private final Environment environment;
 
 
-    public ScreeningService(ScreeningRepository screeningRepository, Scheduler imaxScheduler, Scheduler regularScheduler, DateHolder currentDay, ApplicationProperties applicationProperties) {
+    public ScreeningService(ScreeningRepository screeningRepository, Scheduler imaxScheduler, Scheduler regularScheduler, DateHolder currentDay, ApplicationProperties applicationProperties, Environment environment) {
         this.screeningRepository = screeningRepository;
         this.imaxScheduler = imaxScheduler;
         this.regularScheduler = regularScheduler;
         this.currentDay = currentDay;
         this.applicationProperties = applicationProperties;
+        this.environment = environment;
     }
 
     public void saveInitialScreenings(List<Screening> screeningsToBeSaved) {
@@ -74,22 +78,20 @@ public class ScreeningService {
         return Utils.getRoomScreeningDTOList(screenings);
     }
 
-    public List<RoomScreeningDTO> getListOfScreeningsOfTheWeek(LocalDate monday) {
 
-        List<Screening> screenings = new ArrayList<>();
+    public List<RoomScreeningDTO> getListOfScreeningsOfTheWeek(LocalDate monday) {
+        String weeksToLive = environment.getProperty("cinema.weeks-to-live");
+        int weeksToliveAsInt = Integer.parseInt(weeksToLive);
+
         List<Screening> screeningsCreatedOnMonday  = screeningRepository.findScreeningByFirstDay(monday);
 
-        screenings.addAll(screeningsCreatedOnMonday);
-        List<Screening> screeningsAWeekBefore = screeningRepository.findScreeningByFirstDayAndNumberOfWeeks(monday.minusWeeks(1), 2);
-        List<Screening> screeningsAWeekBefore2 = screeningRepository.findScreeningByFirstDayAndNumberOfWeeks(monday.minusWeeks(1), 3);
-
-        screenings.addAll(screeningsAWeekBefore);
-        screenings.addAll(screeningsAWeekBefore2);
-
-        List<Screening> screeningsTwoWeekBefore = screeningRepository.findScreeningByFirstDayAndNumberOfWeeks(monday.minusWeeks(2), 3);
-        screenings.addAll(screeningsTwoWeekBefore);
-
-
+        List<Screening> screenings = new ArrayList<>(screeningsCreatedOnMonday);
+        for(int i = 1; i<weeksToliveAsInt ; i++){
+            for(int j = i +1 ; j<=weeksToliveAsInt ; j++){
+                List<Screening> screeningsBefore = screeningRepository.findScreeningByFirstDayAndNumberOfWeeks(monday.minusWeeks(i), j);
+                screenings.addAll(screeningsBefore);
+            }
+        }
         return Utils.getRoomScreeningDTOList(screenings);
     }
 
