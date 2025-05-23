@@ -60,7 +60,7 @@ public class MainService {
         LocalDate lastMonday = Utils.findTheMondayOfTheWeek(currentDay.getCurrentDate());
         schedulingService.incrementSchedulerMoviesNumberOfWeeks();
         List<Screening> screeningsToBeSaved = screeningService.getProgrammedScreenings();
-        List<Screening> screeningsOfTheWeek = screeningService.getScreeningsOfLastMonday(lastMonday);
+        List<Screening> screeningsOfTheWeek = screeningService.getScreeningsOfAWeek(lastMonday);
         List<Screening> screeningsToBeSavedPreparedForDb = Utils.getScreeningsToBeSavedPreparedForDb(screeningsOfTheWeek, screeningsToBeSaved);
         screeningService.saveScreenings(screeningsToBeSavedPreparedForDb);
         updateRuntime();

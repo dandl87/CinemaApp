@@ -3,6 +3,7 @@ package com.delorenzo.Cinema.controller;
 import com.delorenzo.Cinema.conf.DateHolder;
 import com.delorenzo.Cinema.dto.RoomScreeningDTO;
 import com.delorenzo.Cinema.entity.Movie;
+import com.delorenzo.Cinema.entity.Screening;
 import com.delorenzo.Cinema.service.*;
 import com.delorenzo.Cinema.utils.Utils;
 import org.slf4j.Logger;
@@ -11,7 +12,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 
@@ -44,8 +44,10 @@ public class MainController {
         LocalDate monday = Utils.findTheMondayOfTheWeek(currentDay.getCurrentDate());
         LocalDate nextMonday = Utils.findTheMondayOfTheWeek(monday.plusDays(7));
 
-        List<RoomScreeningDTO> screenings = screeningService.getListOfScreeningsOfTheWeek(monday);
-        List<RoomScreeningDTO> screeningsNextWeek = screeningService.getProgrammedScreeningsAsDTO();
+        List<Screening> screeningsTemp = screeningService.getScreeningsOfAWeek(monday);
+        List<RoomScreeningDTO> screenings = Utils.getRoomScreeningDTOList(screeningsTemp);
+        List<Screening> screeningsNextWeekTemp = screeningService.getProgrammedScreenings();
+        List<RoomScreeningDTO> screeningsNextWeek = Utils.getRoomScreeningDTOList(screeningsNextWeekTemp);
 
         model.addAttribute("screeningList", screenings);
         model.addAttribute("nextWeek", "da " + nextMonday + " a " + nextMonday.plusDays(7));
@@ -64,7 +66,8 @@ public class MainController {
         else
             monday = Utils.findTheMondayOfTheWeek(day);
         dayFormatted = monday.format(formatter);
-        List<RoomScreeningDTO> screenings = screeningService.getListOfScreeningsOfTheWeek(monday);
+        List<Screening> screeningsTemp = screeningService.getScreeningsOfAWeek(monday);
+        List<RoomScreeningDTO> screenings = Utils.getRoomScreeningDTOList(screeningsTemp);
         model.addAttribute("screeningList", screenings);
         model.addAttribute("dayFormatted", dayFormatted);
         model.addAttribute("currentDay", currentDay.getCurrentDate());
