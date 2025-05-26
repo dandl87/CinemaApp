@@ -17,7 +17,19 @@ public class Room {
     private String name;
     @Getter
     private Integer seats;
+    @Getter
     private Boolean imax;
+
+    public Room(Long id, String name, Integer seats, Boolean imax){
+        this.id = id;
+        this.name = name;
+        this.seats = seats;
+        this.imax = imax;
+    }
+
+    public Room() {
+
+    }
 
 
     @Override

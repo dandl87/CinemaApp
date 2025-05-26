@@ -28,13 +28,21 @@ public class Movie{
     public Movie() {
 
     }
-
-
     public Movie(String title, String director, String year){
         this.title = title;
         this.director = director;
         this.year = year;
+    }
 
+    public Movie(Long id, String title, String director, String year, Integer duration, boolean imax, double value) {
+        this.id = id;
+        this.title = title;
+        this.director = director;
+        this.year = year;
+        this.duration = duration;
+        this.imax = imax;
+        this.value = value;
+        this.screenings = new ArrayList<>();
     }
 
     @Override
