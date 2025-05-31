@@ -1,4 +1,4 @@
-package com.delorenzo.Cinema;
+package com.delorenzo.Cinema.resolvers;
 
 import com.delorenzo.Cinema.entity.Room;
 import org.junit.jupiter.api.extension.ExtensionContext;

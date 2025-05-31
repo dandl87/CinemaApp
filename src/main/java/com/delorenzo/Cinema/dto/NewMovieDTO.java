@@ -10,7 +10,6 @@ public class NewMovieDTO {
     private int duration;
     private boolean imax;
     private double value;
-    private String room;
 
     public NewMovieDTO() {
 

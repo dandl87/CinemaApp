@@ -55,16 +55,14 @@ public class MainService {
 //    6. save to db
 //    7. update schedulers and date
 
-    public void sunday() {
+    public void sundayProcess() {
         logger.info("--- Sunday process started ---");
-        LocalDate lastMonday = Utils.findTheMondayOfTheWeek(currentDay.getCurrentDate());
-        schedulingService.incrementSchedulerMoviesNumberOfWeeks();
-        List<Screening> screeningsToBeSaved = screeningService.getProgrammedScreenings();
-        List<Screening> screeningsOfTheWeek = screeningService.getScreeningsOfAWeek(lastMonday);
-        List<Screening> screeningsToBeSavedPreparedForDb = Utils.getScreeningsToBeSavedPreparedForDb(screeningsOfTheWeek, screeningsToBeSaved);
-        screeningService.saveScreenings(screeningsToBeSavedPreparedForDb);
+        long startTime = System.currentTimeMillis();
+        incrementSchedulerMoviesNumberOfWeeks();
+        prepareScreeningsForDb();
+        saveScreenings(prepareScreeningsForDb());
         updateRuntime();
-        logger.info("--- Sunday process ended ---");
+        logger.info("--- Sunday process ended in {} ms ---", System.currentTimeMillis() - startTime);
     }
 
     private void updateRuntime(){
@@ -73,6 +71,21 @@ public class MainService {
         LocalDate lastMonday = Utils.findTheMondayOfTheWeek(currentDay.getCurrentDate());
         schedulingService.removeScreenings();
         currentDay.updateDate(lastMonday.plusWeeks(1));
+    }
+
+    private void incrementSchedulerMoviesNumberOfWeeks() {
+        schedulingService.incrementSchedulerMoviesNumberOfWeeks();
+    }
+
+    private List<Screening> prepareScreeningsForDb() {
+        LocalDate lastMonday = Utils.findTheMondayOfTheWeek(currentDay.getCurrentDate());
+        List<Screening> screeningsToBeSaved = screeningService.getProgrammedScreenings();
+        List<Screening> screeningsOfTheWeek = screeningService.getScreeningsOfAWeek(lastMonday);
+        return Utils.getScreeningsToBeSavedPreparedForDb(screeningsOfTheWeek, screeningsToBeSaved);
+    }
+
+    private void saveScreenings(List<Screening> screenings) {
+        screeningService.saveScreenings(screenings);
     }
 
 }

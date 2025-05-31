@@ -1,10 +1,11 @@
-package com.delorenzo.Cinema;
+package com.delorenzo.Cinema.unit;
 
 import com.delorenzo.Cinema.entity.Movie;
 import com.delorenzo.Cinema.entity.Room;
 import com.delorenzo.Cinema.entity.Screening;
-import com.delorenzo.Cinema.logic.Scheduler;
 import com.delorenzo.Cinema.logic.Slot;
+import com.delorenzo.Cinema.resolvers.MovieParameterResolver;
+import com.delorenzo.Cinema.resolvers.RoomParameterResolver;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,12 +17,12 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith({RoomParameterResolver.class, MovieParameterResolver.class})
 public class SchedulerUnitTests {
-    Scheduler scheduler;
+    com.delorenzo.Cinema.logic.Scheduler scheduler;
 
 
     @BeforeEach
     void init(Map<String,Room> rooms){
-        scheduler = new Scheduler("Scheduler-Test", 5);
+        scheduler = new com.delorenzo.Cinema.logic.Scheduler("Scheduler-Test", 5);
         List<Room> roomList = rooms.values().stream().toList();
         scheduler.setRoomsToSlots(roomList);
     }
