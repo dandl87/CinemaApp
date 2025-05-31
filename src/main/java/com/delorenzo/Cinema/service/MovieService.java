@@ -4,7 +4,7 @@ import com.delorenzo.Cinema.dto.MovieDTO;
 import com.delorenzo.Cinema.dto.NewMovieDTO;
 import com.delorenzo.Cinema.entity.Movie;
 import com.delorenzo.Cinema.repository.MovieRepository;
-import com.delorenzo.Cinema.utils.Utils;
+import com.delorenzo.Cinema.utils.MovieUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Example;
@@ -33,13 +33,7 @@ public class MovieService {
 
     public List<Movie> getMoviesFromExcel(String fileName) throws IOException {
         logger.info("Getting movies from excel");
-        List<NewMovieDTO> newMovies = moviesFromExcelService.readFile(fileName);
-        List<Movie> movies = new ArrayList<>();
-        for (NewMovieDTO newMovie : newMovies) {
-            Movie movie = saveMovie(newMovie);
-            movies.add(movie);
-        }
-        return movies;
+        return extractMoviesFromExcel(fileName);
     }
     public List<MovieDTO> findMovie(Movie movie) {
         ExampleMatcher matcher = ExampleMatcher.matching()
@@ -54,7 +48,7 @@ public class MovieService {
 
         Example<Movie> example = Example.of(movie, matcher);
         List<Movie> movies = movieRepository.findAll(example);
-        return Utils.getMoviesDTOFromMovies(movies);
+        return MovieUtils.getMoviesDTOFromMovies(movies);
     }
 
     public List<MovieDTO> findMovieTitledLike(String title) {
@@ -69,34 +63,34 @@ public class MovieService {
                 .withMatcher("title", startsWith().ignoreCase());
         Example<Movie> example = Example.of(movie, matcher);
         List<Movie> movies = movieRepository.findAll(example);
-        return Utils.getMoviesDTOFromMovies(movies);
+        return MovieUtils.getMoviesDTOFromMovies(movies);
     }
 
     public  Optional<MovieDTO> findMovieByTitle(String title) {
         Optional<Movie> movie = movieRepository.findByTitle(title);
-        return movie.map(Utils::getMovieDTOFromMovie);
+        return movie.map(MovieUtils::getMovieDTOFromMovie);
     }
 
     public List<Movie> findAllMovies() {
         return movieRepository.findAll();
     }
 
-    private Movie createAMovie(NewMovieDTO newMovie) {
-        Movie movie = new Movie();
-        movie.setTitle(newMovie.getTitle());
-        movie.setDirector(newMovie.getDirector());
-        movie.setYear(String.valueOf(newMovie.getYear()));
-        movie.setDuration(newMovie.getDuration());
-        movie.setImax(newMovie.isImax());
-        movie.setValue(newMovie.getValue());
-        return movie;
-    }
 
     private Movie saveMovie(NewMovieDTO newMovie) {
-        Movie movie = createAMovie(newMovie);
+        Movie movie = MovieUtils.createAMovie(newMovie);
         movieRepository.save(movie);
         logger.info("Movie {} created", movie.getTitle());
         return movie;
+    }
+
+    private List<Movie> extractMoviesFromExcel(String fileName) throws IOException {
+        List<NewMovieDTO> newMovies = moviesFromExcelService.readFile(fileName);
+        List<Movie> movies = new ArrayList<>();
+        for (NewMovieDTO newMovie : newMovies) {
+            Movie movie = saveMovie(newMovie);
+            movies.add(movie);
+        }
+        return movies;
     }
 
 

@@ -3,7 +3,8 @@ package com.delorenzo.Cinema.service;
 import com.delorenzo.Cinema.conf.DateHolder;
 import com.delorenzo.Cinema.entity.Movie;
 import com.delorenzo.Cinema.entity.Screening;
-import com.delorenzo.Cinema.utils.Utils;
+import com.delorenzo.Cinema.utils.DateUtils;
+import com.delorenzo.Cinema.utils.ScreeningUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -35,14 +36,9 @@ public class MainService {
 
     public void batch(String fileName) {
         logger.info("--- Batch process started ---");
-        List<Movie> movies;
-        try {
-            movies = movieService.getMoviesFromExcel(fileName);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        schedulingService.scheduleNewMovies(movies);
-        logger.info("--- Batch process ended ---");
+        long startTime = System.currentTimeMillis();
+        scheduleNewMoviesFromExcel(fileName);
+        logger.info("--- Batch process ended n {} ms ", System.currentTimeMillis() - startTime);
     }
 // the sunday process:
 //    1. find the monday of the current week
@@ -62,13 +58,13 @@ public class MainService {
         prepareScreeningsForDb();
         saveScreenings(prepareScreeningsForDb());
         updateRuntime();
-        logger.info("--- Sunday process ended in {} ms ---", System.currentTimeMillis() - startTime);
+        logger.info("--- Sunday process ended in {} ms ", System.currentTimeMillis() - startTime);
     }
 
     private void updateRuntime(){
         logger.info("updating current Date: {}", currentDay.getCurrentDate());
         logger.info("updating schedulers");
-        LocalDate lastMonday = Utils.findTheMondayOfTheWeek(currentDay.getCurrentDate());
+        LocalDate lastMonday = DateUtils.findTheMondayOfTheWeek(currentDay.getCurrentDate());
         schedulingService.removeScreenings();
         currentDay.updateDate(lastMonday.plusWeeks(1));
     }
@@ -78,14 +74,24 @@ public class MainService {
     }
 
     private List<Screening> prepareScreeningsForDb() {
-        LocalDate lastMonday = Utils.findTheMondayOfTheWeek(currentDay.getCurrentDate());
+        LocalDate lastMonday = DateUtils.findTheMondayOfTheWeek(currentDay.getCurrentDate());
         List<Screening> screeningsToBeSaved = screeningService.getProgrammedScreenings();
         List<Screening> screeningsOfTheWeek = screeningService.getScreeningsOfAWeek(lastMonday);
-        return Utils.getScreeningsToBeSavedPreparedForDb(screeningsOfTheWeek, screeningsToBeSaved);
+        return ScreeningUtils.getScreeningsToBeSavedPreparedForDb(screeningsOfTheWeek, screeningsToBeSaved);
     }
 
     private void saveScreenings(List<Screening> screenings) {
         screeningService.saveScreenings(screenings);
     }
 
+    private void scheduleNewMoviesFromExcel(String fileName){
+        List<Movie> movies;
+        try {
+            movies = movieService.getMoviesFromExcel(fileName);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        schedulingService.scheduleNewMovies(movies);
+
+    }
 }

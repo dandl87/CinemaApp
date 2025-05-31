@@ -1,38 +1,12 @@
 package com.delorenzo.Cinema.utils;
 
-import com.delorenzo.Cinema.dto.MovieDTO;
 import com.delorenzo.Cinema.dto.RoomScreeningDTO;
 import com.delorenzo.Cinema.entity.Movie;
 import com.delorenzo.Cinema.entity.Screening;
-import com.delorenzo.Cinema.logic.Scheduler;
-import java.time.DayOfWeek;
-import java.time.LocalDate;
 import java.util.*;
 
 
-public class Utils {
-
-    public static LocalDate findTheMondayOfTheWeek(LocalDate date) {
-        DayOfWeek day = date.getDayOfWeek();
-        return switch (day) {
-            case TUESDAY -> date.minusDays(1);
-            case WEDNESDAY -> date.minusDays(2);
-            case THURSDAY -> date.minusDays(3);
-            case FRIDAY -> date.minusDays(4);
-            case SATURDAY -> date.minusDays(5);
-            case SUNDAY -> date.minusDays(6);
-            default -> date;
-        };
-    }
-
-    public static Optional<Scheduler> getSchedulerByName(List<Scheduler> schedulers, String name) {
-        for (Scheduler scheduler : schedulers) {
-            if (scheduler.getName().equals(name)) {
-                return Optional.of(scheduler);
-            }
-        }
-        return Optional.empty();
-    }
+public class ScreeningUtils {
 
 
     public static List<Screening> createScreenings(List<Movie> movies) {
@@ -83,11 +57,12 @@ public class Utils {
         return roomScreeningDTOS;
     }
 
+    // This method create the List Of Screenings for the next week with the right number of weeks
     public static List<Screening> getScreeningsToBeSavedPreparedForDb(List<Screening> screeningsOfTheWeek, List<Screening> screeningsToBeSaved) {
         List<Screening> screeningsToBeSavedPreparedForDb = new ArrayList<>();
         screeningsToBeSaved.forEach(screening ->
                 {
-                    Optional<Screening> screeningOpt = Utils.extractScreeningFromAList(screening, screeningsOfTheWeek);
+                    Optional<Screening> screeningOpt = extractScreeningFromAList(screening, screeningsOfTheWeek);
                     if (screeningOpt.isPresent()) {
                         screeningOpt.get().setNumberOfWeeks(screeningOpt.get().getNumberOfWeeks() + 1);
                         screeningsToBeSavedPreparedForDb.add(screeningOpt.get());
@@ -98,25 +73,8 @@ public class Utils {
         return screeningsToBeSavedPreparedForDb;
     }
 
-    public static MovieDTO getMovieDTOFromMovie(Movie movie){
-        MovieDTO movieDTO = new MovieDTO();
-        movieDTO.setTitle(movie.getTitle());
-        movieDTO.setDuration(movie.getDuration());
-        movieDTO.setDirector(movie.getDirector());
-        movieDTO.setValue(movie.getValue());
-        movieDTO.setYear(movie.getYear());
-        movieDTO.setScreeningsDates(movie.getScreenings());
-        return movieDTO;
-    }
 
-    public static List<MovieDTO> getMoviesDTOFromMovies(List<Movie> movies){
-        List<MovieDTO> movieDTOS = new ArrayList<>();
-        for(Movie movie : movies){
-            MovieDTO movieDTO = getMovieDTOFromMovie(movie);
-            movieDTOS.add(movieDTO);
-        }
 
-        return movieDTOS;
-    }
+
 
 }

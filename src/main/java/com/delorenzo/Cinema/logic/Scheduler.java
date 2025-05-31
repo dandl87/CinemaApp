@@ -4,7 +4,7 @@ import com.delorenzo.Cinema.entity.Movie;
 import com.delorenzo.Cinema.entity.Room;
 import com.delorenzo.Cinema.entity.Screening;
 import com.delorenzo.Cinema.exception.RoomsSlotsMismatchException;
-import com.delorenzo.Cinema.utils.Utils;
+import com.delorenzo.Cinema.utils.ScreeningUtils;
 import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,11 +44,11 @@ public class Scheduler {
 
     public synchronized void scheduling(List<Movie> movies) {
         removeScreenings();
-        List<Screening> screenings = Utils.createScreenings(movies);
+        List<Screening> screenings = ScreeningUtils.createScreenings(movies);
 
         // Inserting on empty slot first
         for (Slot slot : slots) {
-            Optional<Screening> screeningMaxValue = Utils.extractScreeningWithMaxValue(screenings);
+            Optional<Screening> screeningMaxValue = ScreeningUtils.extractScreeningWithMaxValue(screenings);
 
             if ((slot.getScreening() == null) && (!screenings.isEmpty())) {
                 slot.setScreening(screeningMaxValue.get());
@@ -61,7 +61,7 @@ public class Scheduler {
 
         // and then the remainings ones to replace those of lesser value
         for (Slot slot : slots) {
-            Optional<Screening> screeningMaxValue = Utils.extractScreeningWithMaxValue(screenings);
+            Optional<Screening> screeningMaxValue = ScreeningUtils.extractScreeningWithMaxValue(screenings);
 
             if ((slot.getScreening() != null) && (!screenings.isEmpty()) && (slot.getScreening().getMovie().getValue() < screeningMaxValue.get().getMovie().getValue())) {
                 String movieReplaced = slot.getScreening().getMovie().getTitle();

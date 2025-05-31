@@ -5,7 +5,8 @@ import com.delorenzo.Cinema.dto.RoomScreeningDTO;
 import com.delorenzo.Cinema.entity.Movie;
 import com.delorenzo.Cinema.entity.Screening;
 import com.delorenzo.Cinema.service.*;
-import com.delorenzo.Cinema.utils.Utils;
+import com.delorenzo.Cinema.utils.DateUtils;
+import com.delorenzo.Cinema.utils.ScreeningUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -41,13 +42,13 @@ public class MainController {
 
     @GetMapping("/")
     public String home(Model model) {
-        LocalDate monday = Utils.findTheMondayOfTheWeek(currentDay.getCurrentDate());
-        LocalDate nextMonday = Utils.findTheMondayOfTheWeek(monday.plusDays(7));
+        LocalDate monday = DateUtils.findTheMondayOfTheWeek(currentDay.getCurrentDate());
+        LocalDate nextMonday = DateUtils.findTheMondayOfTheWeek(monday.plusDays(7));
 
         List<Screening> screeningsTemp = screeningService.getScreeningsOfAWeek(monday);
-        List<RoomScreeningDTO> screenings = Utils.getRoomScreeningDTOList(screeningsTemp);
+        List<RoomScreeningDTO> screenings = ScreeningUtils.getRoomScreeningDTOList(screeningsTemp);
         List<Screening> screeningsNextWeekTemp = screeningService.getProgrammedScreenings();
-        List<RoomScreeningDTO> screeningsNextWeek = Utils.getRoomScreeningDTOList(screeningsNextWeekTemp);
+        List<RoomScreeningDTO> screeningsNextWeek = ScreeningUtils.getRoomScreeningDTOList(screeningsNextWeekTemp);
 
         model.addAttribute("screeningList", screenings);
         model.addAttribute("nextWeek", "da " + nextMonday + " a " + nextMonday.plusDays(7));
@@ -62,12 +63,12 @@ public class MainController {
         String dayFormatted = today.format(formatter);
         LocalDate monday;
         if (day==null)
-            monday = Utils.findTheMondayOfTheWeek(currentDay.getCurrentDate());
+            monday = DateUtils.findTheMondayOfTheWeek(currentDay.getCurrentDate());
         else
-            monday = Utils.findTheMondayOfTheWeek(day);
+            monday = DateUtils.findTheMondayOfTheWeek(day);
         dayFormatted = monday.format(formatter);
         List<Screening> screeningsTemp = screeningService.getScreeningsOfAWeek(monday);
-        List<RoomScreeningDTO> screenings = Utils.getRoomScreeningDTOList(screeningsTemp);
+        List<RoomScreeningDTO> screenings = ScreeningUtils.getRoomScreeningDTOList(screeningsTemp);
         model.addAttribute("screeningList", screenings);
         model.addAttribute("dayFormatted", dayFormatted);
         model.addAttribute("currentDay", currentDay.getCurrentDate());
@@ -96,8 +97,8 @@ public class MainController {
     }
 
     @GetMapping("/sunday")
-    public String sunday() {
-        mainService.sunday();
+    public String sundayProcess() {
+        mainService.sundayProcess();
         return "redirect:/";
     }
 

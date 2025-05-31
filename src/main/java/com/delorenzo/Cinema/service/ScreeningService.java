@@ -2,11 +2,10 @@ package com.delorenzo.Cinema.service;
 
 import com.delorenzo.Cinema.conf.ApplicationProperties;
 import com.delorenzo.Cinema.conf.DateHolder;
-import com.delorenzo.Cinema.dto.RoomScreeningDTO;
 import com.delorenzo.Cinema.entity.Screening;
 import com.delorenzo.Cinema.logic.Scheduler;
 import com.delorenzo.Cinema.repository.ScreeningRepository;
-import com.delorenzo.Cinema.utils.Utils;
+import com.delorenzo.Cinema.utils.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.env.Environment;
@@ -26,7 +25,7 @@ public class ScreeningService {
     private final ApplicationProperties applicationProperties;
 
 
-    public ScreeningService(ScreeningRepository screeningRepository, Scheduler imaxScheduler, Scheduler regularScheduler, DateHolder currentDay, ApplicationProperties applicationProperties, Environment environment) {
+    public ScreeningService(ScreeningRepository screeningRepository, Scheduler imaxScheduler, Scheduler regularScheduler, DateHolder currentDay, ApplicationProperties applicationProperties) {
         this.screeningRepository = screeningRepository;
         this.imaxScheduler = imaxScheduler;
         this.regularScheduler = regularScheduler;
@@ -36,7 +35,7 @@ public class ScreeningService {
 
     public void saveInitialScreenings(List<Screening> screeningsToBeSaved) {
         LocalDate today =  currentDay.getCurrentDate();
-        LocalDate lastMonday = Utils.findTheMondayOfTheWeek(today);
+        LocalDate lastMonday = DateUtils.findTheMondayOfTheWeek(today);
         for (Screening screening : screeningsToBeSaved) {
             screening.setNumberOfWeeks(1);
             screening.setFirstDay(lastMonday);
@@ -47,7 +46,7 @@ public class ScreeningService {
 
     public void saveScreenings(List<Screening> screeningsToBeSaved) {
         logger.info("saving screenings scheduled for next week");
-        LocalDate nextMonday = Utils.findTheMondayOfTheWeek(currentDay.getCurrentDate().plusWeeks(1));
+        LocalDate nextMonday = DateUtils.findTheMondayOfTheWeek(currentDay.getCurrentDate().plusWeeks(1));
         for (Screening screening : screeningsToBeSaved) {
             if(screening.getFirstDay() == null)
                 screening.setFirstDay(nextMonday);

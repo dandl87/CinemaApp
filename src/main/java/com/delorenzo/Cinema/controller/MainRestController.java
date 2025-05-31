@@ -8,7 +8,8 @@ import com.delorenzo.Cinema.entity.Movie;
 import com.delorenzo.Cinema.entity.Screening;
 import com.delorenzo.Cinema.service.MovieService;
 import com.delorenzo.Cinema.service.ScreeningService;
-import com.delorenzo.Cinema.utils.Utils;
+import com.delorenzo.Cinema.utils.DateUtils;
+import com.delorenzo.Cinema.utils.ScreeningUtils;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -36,16 +37,16 @@ public class MainRestController {
 
     @GetMapping("/movie-screenings/week")
     public ResponseEntity<List<RoomScreeningDTO>> findMovieScreeningsOfAWeek(@RequestParam LocalDate day) {
-        LocalDate monday = Utils.findTheMondayOfTheWeek(day);
+        LocalDate monday = DateUtils.findTheMondayOfTheWeek(day);
         List<Screening> weekTemp = screeningService.getScreeningsOfAWeek(monday);
-        List<RoomScreeningDTO> week = Utils.getRoomScreeningDTOList(weekTemp);
+        List<RoomScreeningDTO> week = ScreeningUtils.getRoomScreeningDTOList(weekTemp);
         return ResponseEntity.ok(week);
     }
 
     @GetMapping("/movie-screenings/last-week")
     public ResponseEntity<List<RoomScreeningDTO>> findMovieScreeningsOfTheLastWeek() {
-        List<Screening> weekTemp = screeningService.getScreeningsOfAWeek(Utils.findTheMondayOfTheWeek(currentDay.getCurrentDate()));
-        List<RoomScreeningDTO> week = Utils.getRoomScreeningDTOList(weekTemp);
+        List<Screening> weekTemp = screeningService.getScreeningsOfAWeek(DateUtils.findTheMondayOfTheWeek(currentDay.getCurrentDate()));
+        List<RoomScreeningDTO> week = ScreeningUtils.getRoomScreeningDTOList(weekTemp);
         return ResponseEntity.ok(week);
     }
 
