@@ -55,8 +55,8 @@ public class MainService {
         logger.info("--- Sunday process started ---");
         long startTime = System.currentTimeMillis();
         incrementSchedulerMoviesNumberOfWeeks();
-        prepareScreeningsForDb();
-        saveScreenings(prepareScreeningsForDb());
+        List<Screening> screeningsToBeSaved = prepareScreeningsForDb();
+        saveScreenings(screeningsToBeSaved);
         updateRuntime();
         logger.info("--- Sunday process ended in {} ms ", System.currentTimeMillis() - startTime);
     }
@@ -75,9 +75,9 @@ public class MainService {
 
     private List<Screening> prepareScreeningsForDb() {
         LocalDate lastMonday = DateUtils.findTheMondayOfTheWeek(currentDay.getCurrentDate());
-        List<Screening> screeningsToBeSaved = screeningService.getProgrammedScreenings();
-        List<Screening> screeningsOfTheWeek = screeningService.getScreeningsOfAWeek(lastMonday);
-        return ScreeningUtils.getScreeningsToBeSavedPreparedForDb(screeningsOfTheWeek, screeningsToBeSaved);
+        List<Screening> screeningsScheduled = screeningService.getProgrammedScreenings();
+        List<Screening> screeningsOnAir = screeningService.getScreeningsOfAWeek(lastMonday);
+        return ScreeningUtils.getScreeningsToBeSavedPreparedForDb(screeningsOnAir, screeningsScheduled);
     }
 
     private void saveScreenings(List<Screening> screenings) {

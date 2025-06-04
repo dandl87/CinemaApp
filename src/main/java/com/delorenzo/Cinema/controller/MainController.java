@@ -4,6 +4,7 @@ import com.delorenzo.Cinema.conf.DateHolder;
 import com.delorenzo.Cinema.dto.RoomScreeningDTO;
 import com.delorenzo.Cinema.entity.Movie;
 import com.delorenzo.Cinema.entity.Screening;
+import com.delorenzo.Cinema.exception.NotAValidDateException;
 import com.delorenzo.Cinema.service.*;
 import com.delorenzo.Cinema.utils.DateUtils;
 import com.delorenzo.Cinema.utils.ScreeningUtils;
@@ -58,14 +59,16 @@ public class MainController {
     }
     @GetMapping("/screenings")
     public String getScreenings(@RequestParam(value = "data", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate day, Model model){
-        LocalDate today = currentDay.getCurrentDate();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        String dayFormatted = today.format(formatter);
+        String dayFormatted;
         LocalDate monday;
         if (day==null)
             monday = DateUtils.findTheMondayOfTheWeek(currentDay.getCurrentDate());
-        else
+        else {
             monday = DateUtils.findTheMondayOfTheWeek(day);
+            if (monday.isAfter(currentDay.getCurrentDate()))
+                throw new NotAValidDateException("Future Screenings are not defined");
+        }
         dayFormatted = monday.format(formatter);
         List<Screening> screeningsTemp = screeningService.getScreeningsOfAWeek(monday);
         List<RoomScreeningDTO> screenings = ScreeningUtils.getRoomScreeningDTOList(screeningsTemp);
