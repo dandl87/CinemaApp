@@ -5,23 +5,28 @@ import com.delorenzo.Cinema.dto.RoomScreeningDTO;
 import com.delorenzo.Cinema.entity.Movie;
 import com.delorenzo.Cinema.entity.Screening;
 import com.delorenzo.Cinema.exception.NotAValidDateException;
+import com.delorenzo.Cinema.exception.StorageFileException;
 import com.delorenzo.Cinema.service.*;
 import com.delorenzo.Cinema.utils.DateUtils;
 import com.delorenzo.Cinema.utils.ScreeningUtils;
+import org.apache.poi.openxml4j.exceptions.NotOfficeXmlFileException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.zip.ZipException;
 
 @Controller
 public class MainController {
@@ -105,5 +110,18 @@ public class MainController {
         return "redirect:/";
     }
 
+    @ExceptionHandler(NotAValidDateException.class)
+    public String handleNotAValidDateException(NotAValidDateException ex, Model model) {
+            model.addAttribute("type", "Invalid Date");
+            model.addAttribute("errorMessage", ex.getMessage());
+        return "error";
+    }
+
+    @ExceptionHandler(StorageFileException.class)
+    public String handleStorageFileError(Exception ex, Model model){
+        model.addAttribute("type", "File Error");
+        model.addAttribute("errorMessage", ex.getMessage());
+        return "error";
+    }
 
 }

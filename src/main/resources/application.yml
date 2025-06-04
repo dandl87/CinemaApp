@@ -1,6 +1,10 @@
 cinema:
   weeks-to-live: 3
 
+server:
+  error:
+    path: '/error'
+
 spring:
   application:
     name: cinema

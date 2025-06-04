@@ -46,7 +46,7 @@
 </head>
 <body>
 <nav>
-  <a style="text-decoration: none; color: inherit;"><i class="fa-solid fa-house"></i></a>
+  <a th:href="@{/}" style="text-decoration: none; color: inherit;"><i class="fa-solid fa-house"></i></a>
   <a th:href="@{/screenings}" style="text-decoration: none; color: inherit;"><i class="fa-solid fa-video"></i> Screenings </a>
   <a th:href="@{/movies}" style="text-decoration: none; color: inherit;"><i class="fa-solid fa-film"></i> Film</a>
   <a th:href="@{/movies/upload}" style="text-decoration: none; color: inherit;"><i class="fa-solid fa-plus"></i> file</a>
@@ -57,7 +57,9 @@
 </nav>
 
 <div>
-  <h1 style="text-align:center;"> Errore</h1>
+  <h1>Ops..</h1>
+  <p>Error Type: <span th:text="${type}">Unknown</span></p>
+  <p>Error Message: <span th:text="${errorMessage}">Unknown</span></p>
 </div>
 
 </body>

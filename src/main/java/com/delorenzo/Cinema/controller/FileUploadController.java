@@ -1,6 +1,5 @@
 package com.delorenzo.Cinema.controller;
 
-import com.delorenzo.Cinema.exception.StorageFileNotFoundException;
 import com.delorenzo.Cinema.service.MainService;
 import com.delorenzo.Cinema.service.StorageService;
 import org.slf4j.Logger;
@@ -51,9 +50,6 @@ public class FileUploadController {
         return "redirect:/files";
     }
 
-    @ExceptionHandler(StorageFileNotFoundException.class)
-    public ResponseEntity<?> handleStorageFileNotFound(){
-        return ResponseEntity.notFound().build();
-    }
+
 
 }

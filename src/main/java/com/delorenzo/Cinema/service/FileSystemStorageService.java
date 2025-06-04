@@ -2,8 +2,9 @@ package com.delorenzo.Cinema.service;
 
 import com.delorenzo.Cinema.conf.StorageProperties;
 import com.delorenzo.Cinema.exception.StorageException;
-import com.delorenzo.Cinema.exception.StorageFileNotFoundException;
+import com.delorenzo.Cinema.exception.StorageFileException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 @Service
@@ -90,17 +92,18 @@ public class FileSystemStorageService implements StorageService{
         try {
             Path file = load(filename);
             Resource resource = new UrlResource(file.toUri());
-            if (resource.exists() || resource.isReadable()) {
-                return resource;
+            if(!resource.exists()) {
+                throw new StorageFileException("Could not find file: " + filename);
             }
-            else {
-                throw new StorageFileNotFoundException(
-                        "Could not read file: " + filename);
+            if(!resource.isReadable()) {
+                throw new StorageFileException("Could not read file: " + filename);
+            }
 
-            }
+            return resource;
+
         }
         catch (MalformedURLException e) {
-            throw new StorageFileNotFoundException("Could not read file: " + filename, e);
+            throw new StorageFileException("Could not read file: " + filename, e);
         }
     }
 

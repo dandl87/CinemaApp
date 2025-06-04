@@ -3,6 +3,7 @@ package com.delorenzo.Cinema.service;
 import com.delorenzo.Cinema.conf.DateHolder;
 import com.delorenzo.Cinema.entity.Movie;
 import com.delorenzo.Cinema.entity.Screening;
+import com.delorenzo.Cinema.exception.StorageFileException;
 import com.delorenzo.Cinema.utils.DateUtils;
 import com.delorenzo.Cinema.utils.ScreeningUtils;
 import org.slf4j.Logger;
@@ -89,7 +90,7 @@ public class MainService {
         try {
             movies = movieService.getMoviesFromExcel(fileName);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new StorageFileException(e.getMessage());
         }
         schedulingService.scheduleNewMovies(movies);
 
