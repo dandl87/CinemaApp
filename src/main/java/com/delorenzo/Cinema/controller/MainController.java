@@ -5,11 +5,10 @@ import com.delorenzo.Cinema.dto.RoomScreeningDTO;
 import com.delorenzo.Cinema.entity.Movie;
 import com.delorenzo.Cinema.entity.Screening;
 import com.delorenzo.Cinema.exception.NotAValidDateException;
-import com.delorenzo.Cinema.exception.StorageFileException;
+import com.delorenzo.Cinema.exception.StorageException;
 import com.delorenzo.Cinema.service.*;
 import com.delorenzo.Cinema.utils.DateUtils;
 import com.delorenzo.Cinema.utils.ScreeningUtils;
-import org.apache.poi.openxml4j.exceptions.NotOfficeXmlFileException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -113,7 +112,7 @@ public class MainController {
         return "error";
     }
 
-    @ExceptionHandler(StorageFileException.class)
+    @ExceptionHandler(StorageException.class)
     public String handleStorageFileError(Exception ex, Model model){
         model.addAttribute("type", "File Error");
         model.addAttribute("errorMessage", ex.getMessage());

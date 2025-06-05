@@ -3,7 +3,6 @@ package com.delorenzo.Cinema.service;
 import com.delorenzo.Cinema.dto.MovieDTO;
 import com.delorenzo.Cinema.dto.NewMovieDTO;
 import com.delorenzo.Cinema.entity.Movie;
-import com.delorenzo.Cinema.exception.StorageFileException;
 import com.delorenzo.Cinema.repository.MovieRepository;
 import com.delorenzo.Cinema.utils.MovieUtils;
 import org.slf4j.Logger;
