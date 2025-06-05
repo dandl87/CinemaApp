@@ -2,7 +2,7 @@ package com.delorenzo.Cinema.service;
 
 import com.delorenzo.Cinema.conf.StorageProperties;
 import com.delorenzo.Cinema.dto.NewMovieDTO;
-import com.delorenzo.Cinema.exception.StorageException;
+import com.delorenzo.Cinema.exception.UploadFileException;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
@@ -24,7 +24,7 @@ public class MoviesFromExcelService {
     public MoviesFromExcelService(StorageProperties properties) throws IOException {
 
         if (properties.getLocation().trim().isEmpty()) {
-            throw new StorageException("File upload location can not be empty");
+            throw new UploadFileException("File upload location can not be empty");
         }
         this.rootLocation = Paths.get(properties.getLocation());
 

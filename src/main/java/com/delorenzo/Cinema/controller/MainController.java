@@ -6,6 +6,7 @@ import com.delorenzo.Cinema.entity.Movie;
 import com.delorenzo.Cinema.entity.Screening;
 import com.delorenzo.Cinema.exception.NotAValidDateException;
 import com.delorenzo.Cinema.exception.StorageException;
+import com.delorenzo.Cinema.exception.UploadFileException;
 import com.delorenzo.Cinema.service.*;
 import com.delorenzo.Cinema.utils.DateUtils;
 import com.delorenzo.Cinema.utils.ScreeningUtils;
@@ -114,6 +115,13 @@ public class MainController {
 
     @ExceptionHandler(StorageException.class)
     public String handleStorageFileError(Exception ex, Model model){
+        model.addAttribute("type", "File Error");
+        model.addAttribute("errorMessage", ex.getMessage());
+        return "error";
+    }
+
+    @ExceptionHandler(UploadFileException.class)
+    public String handleUploadFileError(Exception ex, Model model){
         model.addAttribute("type", "File Error");
         model.addAttribute("errorMessage", ex.getMessage());
         return "error";
