@@ -18,5 +18,5 @@ La piattaforma backend deve rendere possibile l'inserimento di nuovi film tramit
 ## Run
 docker-compose up --build
 
-the application is listening on port 8081
+the application listen on port 8081
 

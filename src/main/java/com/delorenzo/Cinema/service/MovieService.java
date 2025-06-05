@@ -32,7 +32,7 @@ public class MovieService {
         this.movieRepository = movieRepository;
     }
 
-    public List<Movie> getMoviesFromExcel(String fileName) throws IOException {
+    public List<Movie> getMoviesFromExcel(String fileName) throws RuntimeException, IOException {
         logger.info("Getting movies from excel");
         return extractMoviesFromExcel(fileName);
     }
@@ -84,7 +84,7 @@ public class MovieService {
         return movie;
     }
 
-    private List<Movie> extractMoviesFromExcel(String fileName) throws IOException {
+    private List<Movie> extractMoviesFromExcel(String fileName) throws RuntimeException, IOException {
         List<NewMovieDTO> newMovies = null;
             newMovies = moviesFromExcelService.readFile(fileName);
 

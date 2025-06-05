@@ -2,15 +2,19 @@ package com.delorenzo.Cinema.controller;
 
 import com.delorenzo.Cinema.service.MainService;
 import com.delorenzo.Cinema.service.StorageService;
+import org.apache.poi.openxml4j.exceptions.NotOfficeXmlFileException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.io.IOException;
 
 
 @Controller
@@ -40,8 +44,7 @@ public class FileUploadController {
     @PostMapping("/files/insert")
     public String handleFileUpload(
             @RequestParam("file") MultipartFile file,
-            RedirectAttributes redirectAttributes)
-    {
+            RedirectAttributes redirectAttributes) throws IOException, RuntimeException {
 
         logger.info(file.getOriginalFilename());
         storageService.store(file);
@@ -50,6 +53,12 @@ public class FileUploadController {
         return "redirect:/files";
     }
 
+    @ExceptionHandler(NotOfficeXmlFileException.class)
+    public String handleNotAValidFileError(Exception ex, Model model){
+        model.addAttribute("type", "File Error");
+        model.addAttribute("errorMessage", ex.getMessage());
+        return "error";
+    }
 
 
 }

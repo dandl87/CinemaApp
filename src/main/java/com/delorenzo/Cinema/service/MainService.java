@@ -35,7 +35,7 @@ public class MainService {
     }
 
 
-    public void batch(String fileName) {
+    public void batch(String fileName) throws RuntimeException, IOException {
         logger.info("--- Batch process started ---");
         long startTime = System.currentTimeMillis();
         scheduleNewMoviesFromExcel(fileName);
@@ -85,13 +85,11 @@ public class MainService {
         screeningService.saveScreenings(screenings);
     }
 
-    private void scheduleNewMoviesFromExcel(String fileName){
+    private void scheduleNewMoviesFromExcel(String fileName) throws RuntimeException, IOException {
         List<Movie> movies;
-        try {
+
             movies = movieService.getMoviesFromExcel(fileName);
-        } catch (IOException e) {
-            throw new StorageFileException(e.getMessage());
-        }
+
         schedulingService.scheduleNewMovies(movies);
 
     }

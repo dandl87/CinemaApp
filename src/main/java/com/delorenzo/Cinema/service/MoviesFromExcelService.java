@@ -3,12 +3,14 @@ package com.delorenzo.Cinema.service;
 import com.delorenzo.Cinema.conf.StorageProperties;
 import com.delorenzo.Cinema.dto.NewMovieDTO;
 import com.delorenzo.Cinema.exception.StorageException;
+import com.delorenzo.Cinema.exception.StorageFileException;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -30,12 +32,22 @@ public class MoviesFromExcelService {
 
     }
 
-    public List<NewMovieDTO> readFile(String fileName) throws IOException {
+    public List<NewMovieDTO> readFile(String fileName){
 
         fileName = fileName.trim();
 
-        FileInputStream inputStream = new FileInputStream(rootLocation+"/" + fileName);
-        Workbook workbook = new XSSFWorkbook(inputStream);
+        FileInputStream inputStream = null;
+        try {
+            inputStream = new FileInputStream(rootLocation+"/" + fileName);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        Workbook workbook = null;
+        try {
+            workbook = new XSSFWorkbook(inputStream);
+        } catch (IOException e) {
+            throw new StorageFileException(e.getMessage());
+        }
         List<NewMovieDTO> newMovies = new ArrayList<>();
         Sheet firstSheet = workbook.getSheetAt(0);
         Iterator<Row> rowIterator = firstSheet.iterator();
@@ -92,7 +104,11 @@ public class MoviesFromExcelService {
                 }
                 newMovies.add(newMovie);
             }
-        workbook.close();
+        try {
+            workbook.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         return newMovies;
 
     }
