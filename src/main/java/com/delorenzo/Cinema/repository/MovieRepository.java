@@ -9,6 +9,5 @@ import java.util.Optional;
 
 public interface MovieRepository extends JpaRepository<Movie,Long>, QueryByExampleExecutor<Movie> {
     Optional<Movie> findByTitle(String title);
-    List<Movie> findMovieByImax(boolean imax);
 
 }

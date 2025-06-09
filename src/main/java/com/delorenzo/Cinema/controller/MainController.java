@@ -31,6 +31,7 @@ public class MainController {
     private final StorageService storageService;
     private final ScreeningService screeningService;
     private final DateHolder calendar;
+    private LocalDate monday;
 
     public MainController(MovieService movieService, StorageService storageService, ScreeningService screeningService, MainService mainService, DateHolder calendar) {
         this.movieService = movieService;
@@ -42,15 +43,13 @@ public class MainController {
 
     @GetMapping("/")
     public String showHomePage(Model model) {
-        LocalDate monday = CalendarUtils.findTheMondayOfTheWeek(calendar.getCurrentDate());
+        monday = CalendarUtils.findTheMondayOfTheWeek(calendar.getCurrentDate());
         LocalDate nextMonday = CalendarUtils.findTheMondayOfTheWeek(monday.plusDays(7));
-        List<Screening> weeklyScreenings = screeningService.getScreeningsOfAWeek(monday);
-        List<WeeklyScreeningsDTO> weeklyScreeningsDTOS = ScreeningUtils.getRoomScreeningDTOList(weeklyScreenings);
-        List<Screening> screeningsNextWeekTemp = screeningService.getScheduledScreenings();
-        List<WeeklyScreeningsDTO> screeningsNextWeek = ScreeningUtils.getRoomScreeningDTOList(screeningsNextWeekTemp);
-        model.addAttribute("screeningList", weeklyScreeningsDTOS);
+        List<WeeklyScreeningsDTO> currentWeekScreeningsDTOS = getWeeklyScreeningsAsDTO(monday);
+        List<WeeklyScreeningsDTO> nextWeekScreeningsDTOS = getWeeklyScreeningsAsDTO(nextMonday);
+        model.addAttribute("screeningList", currentWeekScreeningsDTOS);
         model.addAttribute("nextWeek", "da " + nextMonday + " a " + nextMonday.plusDays(7));
-        model.addAttribute("roomListNextWeek", screeningsNextWeek);
+        model.addAttribute("roomListNextWeek", nextWeekScreeningsDTOS);
         model.addAttribute("currentDay", calendar.getCurrentDate());
         return "home";
     }
@@ -58,7 +57,6 @@ public class MainController {
     public String showWeeklyScreenings(@RequestParam(value = "data", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate day, Model model){
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         String dayFormatted;
-        LocalDate monday;
         if (day==null)
             monday = CalendarUtils.findTheMondayOfTheWeek(calendar.getCurrentDate());
         else {
@@ -77,9 +75,7 @@ public class MainController {
 
     @GetMapping("/movies")
     public String showMovieList(Model model) {
-        List<Movie> movies = movieService.findAllMovies();
-        // devo usare i dtos
-        List<MovieDTO> moviesDTOS = MovieUtils.getMoviesDTOFromMovies(movies);
+        List<MovieDTO> moviesDTOS = getMoviesDTOS();
         model.addAttribute("filmList", moviesDTOS);
         model.addAttribute("currentDay", calendar.getCurrentDate());
         return "movieList";
@@ -125,6 +121,13 @@ public class MainController {
         return "error";
     }
 
+    private List<WeeklyScreeningsDTO> getWeeklyScreeningsAsDTO(LocalDate monday){
+        List<Screening> weeklyScreenings = screeningService.getScreeningsOfAWeek(monday);
+        return ScreeningUtils.getRoomScreeningDTOList(weeklyScreenings);
+    }
 
-
+    private List<MovieDTO> getMoviesDTOS() {
+        List<Movie> movies = movieService.findAllMovies();
+        return MovieUtils.getMoviesDTOFromMovies(movies);
+    }
 }

@@ -45,7 +45,6 @@ public class FileUploadController {
     public String handleFileUpload(
             @RequestParam("file") MultipartFile file,
             RedirectAttributes redirectAttributes) throws IOException, RuntimeException {
-
         logger.info(file.getOriginalFilename());
         storageService.store(file);
         redirectAttributes.addFlashAttribute("message", "File "+file.getOriginalFilename()+" uploaded successfully!");
