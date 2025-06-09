@@ -3,7 +3,7 @@ package com.delorenzo.Cinema.service;
 import com.delorenzo.Cinema.conf.DateHolder;
 import com.delorenzo.Cinema.entity.Movie;
 import com.delorenzo.Cinema.entity.Screening;
-import com.delorenzo.Cinema.utils.DateUtils;
+import com.delorenzo.Cinema.utils.CalendarUtils;
 import com.delorenzo.Cinema.utils.ScreeningUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,16 +13,16 @@ import java.time.LocalDate;
 import java.util.*;
 
 @Service
-public class MainService {
+public class WeeklyProcessingService {
 
-    private static final Logger logger = LoggerFactory.getLogger(MainService.class);
+    private static final Logger logger = LoggerFactory.getLogger(WeeklyProcessingService.class);
     private final MovieService movieService;
     private final ScreeningService screeningService;
     private final SchedulingService schedulingService;
 
     private final DateHolder currentDay;
 
-    public MainService(
+    public WeeklyProcessingService(
             MovieService movieService,
             ScreeningService screeningService,
             SchedulingService schedulingService,
@@ -64,7 +64,7 @@ public class MainService {
     private void updateRuntime(){
         logger.info("updating current Date: {}", currentDay.getCurrentDate());
         logger.info("updating schedulers");
-        LocalDate lastMonday = DateUtils.findTheMondayOfTheWeek(currentDay.getCurrentDate());
+        LocalDate lastMonday = CalendarUtils.findTheMondayOfTheWeek(currentDay.getCurrentDate());
         schedulingService.removeScreenings();
         currentDay.updateDate(lastMonday.plusWeeks(1));
     }
@@ -74,8 +74,8 @@ public class MainService {
     }
 
     private List<Screening> prepareScreeningsForDb() {
-        LocalDate lastMonday = DateUtils.findTheMondayOfTheWeek(currentDay.getCurrentDate());
-        List<Screening> screeningsScheduled = screeningService.getProgrammedScreenings();
+        LocalDate lastMonday = CalendarUtils.findTheMondayOfTheWeek(currentDay.getCurrentDate());
+        List<Screening> screeningsScheduled = screeningService.getScheduledScreenings();
         List<Screening> screeningsOnAir = screeningService.getScreeningsOfAWeek(lastMonday);
         return ScreeningUtils.getScreeningsToBeSavedPreparedForDb(screeningsOnAir, screeningsScheduled);
     }

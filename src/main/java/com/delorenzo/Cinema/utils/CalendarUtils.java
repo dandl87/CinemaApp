@@ -3,7 +3,7 @@ package com.delorenzo.Cinema.utils;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 
-public class DateUtils {
+public class CalendarUtils {
     public static LocalDate findTheMondayOfTheWeek(LocalDate date) {
         DayOfWeek day = date.getDayOfWeek();
         return switch (day) {

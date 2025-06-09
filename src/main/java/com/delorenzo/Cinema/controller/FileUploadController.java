@@ -1,6 +1,6 @@
 package com.delorenzo.Cinema.controller;
 
-import com.delorenzo.Cinema.service.MainService;
+import com.delorenzo.Cinema.service.WeeklyProcessingService;
 import com.delorenzo.Cinema.service.StorageService;
 import org.apache.poi.openxml4j.exceptions.NotOfficeXmlFileException;
 import org.slf4j.Logger;
@@ -21,10 +21,10 @@ import java.io.IOException;
 public class FileUploadController {
 
     private final StorageService storageService;
-    private final MainService mainService;
+    private final WeeklyProcessingService mainService;
     private static final Logger logger = LoggerFactory.getLogger(FileUploadController.class);
 
-    public FileUploadController(StorageService storageService, MainService mainService) {
+    public FileUploadController(StorageService storageService, WeeklyProcessingService mainService) {
         this.storageService = storageService;
         this.mainService = mainService;
     }

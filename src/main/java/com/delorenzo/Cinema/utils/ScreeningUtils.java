@@ -1,6 +1,6 @@
 package com.delorenzo.Cinema.utils;
 
-import com.delorenzo.Cinema.dto.RoomScreeningDTO;
+import com.delorenzo.Cinema.dto.WeeklyScreeningsDTO;
 import com.delorenzo.Cinema.entity.Movie;
 import com.delorenzo.Cinema.entity.Screening;
 import java.util.*;
@@ -42,10 +42,10 @@ public class ScreeningUtils {
         return Optional.empty();
     }
 
-    public static List<RoomScreeningDTO> getRoomScreeningDTOList(List<Screening> screenings) {
-        List<RoomScreeningDTO> roomScreeningDTOS = new ArrayList<>();
+    public static List<WeeklyScreeningsDTO> getRoomScreeningDTOList(List<Screening> screenings) {
+        List<WeeklyScreeningsDTO> roomScreeningDTOS = new ArrayList<>();
         for (Screening screening : screenings) {
-            RoomScreeningDTO roomScreeningDTO = new RoomScreeningDTO();
+            WeeklyScreeningsDTO roomScreeningDTO = new WeeklyScreeningsDTO();
             roomScreeningDTO.setMovieTitle(screening.getMovie().getTitle());
             roomScreeningDTO.setDuration(screening.getMovie().getDuration());
             roomScreeningDTO.setSeatsAvailable(screening.getRoom().getSeats());
@@ -53,7 +53,7 @@ public class ScreeningUtils {
             roomScreeningDTO.setImax(screening.getMovie().isImax());
             roomScreeningDTOS.add(roomScreeningDTO);
         }
-        roomScreeningDTOS.sort(Comparator.comparing(RoomScreeningDTO::getRoomName));
+        roomScreeningDTOS.sort(Comparator.comparing(WeeklyScreeningsDTO::getRoomName));
         return roomScreeningDTOS;
     }
 

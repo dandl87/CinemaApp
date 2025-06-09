@@ -3,12 +3,12 @@ package com.delorenzo.Cinema.controller;
 import com.delorenzo.Cinema.conf.DateHolder;
 import com.delorenzo.Cinema.dto.MovieDTO;
 import com.delorenzo.Cinema.dto.MovieToSearchDTO;
-import com.delorenzo.Cinema.dto.RoomScreeningDTO;
+import com.delorenzo.Cinema.dto.WeeklyScreeningsDTO;
 import com.delorenzo.Cinema.entity.Movie;
 import com.delorenzo.Cinema.entity.Screening;
 import com.delorenzo.Cinema.service.MovieService;
 import com.delorenzo.Cinema.service.ScreeningService;
-import com.delorenzo.Cinema.utils.DateUtils;
+import com.delorenzo.Cinema.utils.CalendarUtils;
 import com.delorenzo.Cinema.utils.ScreeningUtils;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpHeaders;
@@ -36,17 +36,17 @@ public class MainRestController {
     }
 
     @GetMapping("/movie-screenings/week")
-    public ResponseEntity<List<RoomScreeningDTO>> findMovieScreeningsOfAWeek(@RequestParam LocalDate day) {
-        LocalDate monday = DateUtils.findTheMondayOfTheWeek(day);
+    public ResponseEntity<List<WeeklyScreeningsDTO>> findMovieScreeningsOfAWeek(@RequestParam LocalDate day) {
+        LocalDate monday = CalendarUtils.findTheMondayOfTheWeek(day);
         List<Screening> weekTemp = screeningService.getScreeningsOfAWeek(monday);
-        List<RoomScreeningDTO> week = ScreeningUtils.getRoomScreeningDTOList(weekTemp);
+        List<WeeklyScreeningsDTO> week = ScreeningUtils.getRoomScreeningDTOList(weekTemp);
         return ResponseEntity.ok(week);
     }
 
     @GetMapping("/movie-screenings/last-week")
-    public ResponseEntity<List<RoomScreeningDTO>> findMovieScreeningsOfTheLastWeek() {
-        List<Screening> weekTemp = screeningService.getScreeningsOfAWeek(DateUtils.findTheMondayOfTheWeek(currentDay.getCurrentDate()));
-        List<RoomScreeningDTO> week = ScreeningUtils.getRoomScreeningDTOList(weekTemp);
+    public ResponseEntity<List<WeeklyScreeningsDTO>> findMovieScreeningsOfTheLastWeek() {
+        List<Screening> weekTemp = screeningService.getScreeningsOfAWeek(CalendarUtils.findTheMondayOfTheWeek(currentDay.getCurrentDate()));
+        List<WeeklyScreeningsDTO> week = ScreeningUtils.getRoomScreeningDTOList(weekTemp);
         return ResponseEntity.ok(week);
     }
 

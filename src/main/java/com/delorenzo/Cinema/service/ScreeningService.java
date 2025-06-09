@@ -5,10 +5,9 @@ import com.delorenzo.Cinema.conf.DateHolder;
 import com.delorenzo.Cinema.entity.Screening;
 import com.delorenzo.Cinema.logic.Scheduler;
 import com.delorenzo.Cinema.repository.ScreeningRepository;
-import com.delorenzo.Cinema.utils.DateUtils;
+import com.delorenzo.Cinema.utils.CalendarUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -21,21 +20,21 @@ public class ScreeningService {
     private final ScreeningRepository screeningRepository;
     private final Scheduler imaxScheduler;
     private final Scheduler regularScheduler;
-    private final DateHolder currentDay;
+    private final DateHolder calendar;
     private final ApplicationProperties applicationProperties;
 
 
-    public ScreeningService(ScreeningRepository screeningRepository, Scheduler imaxScheduler, Scheduler regularScheduler, DateHolder currentDay, ApplicationProperties applicationProperties) {
+    public ScreeningService(ScreeningRepository screeningRepository, Scheduler imaxScheduler, Scheduler regularScheduler, DateHolder calendar, ApplicationProperties applicationProperties) {
         this.screeningRepository = screeningRepository;
         this.imaxScheduler = imaxScheduler;
         this.regularScheduler = regularScheduler;
-        this.currentDay = currentDay;
+        this.calendar = calendar;
         this.applicationProperties = applicationProperties;
     }
 
     public void saveInitialScreenings(List<Screening> screeningsToBeSaved) {
-        LocalDate today =  currentDay.getCurrentDate();
-        LocalDate lastMonday = DateUtils.findTheMondayOfTheWeek(today);
+        LocalDate today =  calendar.getCurrentDate();
+        LocalDate lastMonday = CalendarUtils.findTheMondayOfTheWeek(today);
         for (Screening screening : screeningsToBeSaved) {
             screening.setNumberOfWeeks(1);
             screening.setFirstDay(lastMonday);
@@ -46,7 +45,7 @@ public class ScreeningService {
 
     public void saveScreenings(List<Screening> screeningsToBeSaved) {
         logger.info("saving screenings scheduled for next week");
-        LocalDate nextMonday = DateUtils.findTheMondayOfTheWeek(currentDay.getCurrentDate().plusWeeks(1));
+        LocalDate nextMonday = CalendarUtils.findTheMondayOfTheWeek(calendar.getCurrentDate().plusWeeks(1));
         for (Screening screening : screeningsToBeSaved) {
             if(screening.getFirstDay() == null)
                 screening.setFirstDay(nextMonday);
@@ -56,7 +55,7 @@ public class ScreeningService {
     }
 
 
-    public List<Screening> getProgrammedScreenings() {
+    public List<Screening> getScheduledScreenings() {
         List<Screening> screenings = new ArrayList<>();
         imaxScheduler.getScheduledScreenings().stream().filter(Objects::nonNull).forEach(s -> {
                     screenings.add(s.clone());
