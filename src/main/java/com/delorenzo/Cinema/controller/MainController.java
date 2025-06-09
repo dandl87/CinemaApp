@@ -26,17 +26,17 @@ import java.util.stream.Collectors;
 
 @Controller
 public class MainController {
-    private final WeeklyProcessingService weeklyProcessingService;
+    private final MainService mainService;
     private final MovieService movieService;
     private final StorageService storageService;
     private final ScreeningService screeningService;
     private final DateHolder calendar;
 
-    public MainController(MovieService movieService, StorageService storageService, ScreeningService screeningService, WeeklyProcessingService weeklyProcessingService, DateHolder calendar) {
+    public MainController(MovieService movieService, StorageService storageService, ScreeningService screeningService, MainService mainService, DateHolder calendar) {
         this.movieService = movieService;
         this.storageService = storageService;
         this.screeningService = screeningService;
-        this.weeklyProcessingService = weeklyProcessingService;
+        this.mainService = mainService;
         this.calendar = calendar;
     }
 
@@ -100,7 +100,7 @@ public class MainController {
 
     @GetMapping("/sunday")
     public String triggerSundayProcessing() {
-        weeklyProcessingService.sundayProcess();
+        mainService.sundayProcess();
         return "redirect:/";
     }
 
