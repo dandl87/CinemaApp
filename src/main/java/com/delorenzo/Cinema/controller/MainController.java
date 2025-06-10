@@ -6,8 +6,6 @@ import com.delorenzo.Cinema.dto.WeeklyScreeningsDTO;
 import com.delorenzo.Cinema.entity.Movie;
 import com.delorenzo.Cinema.entity.Screening;
 import com.delorenzo.Cinema.exception.NotAValidDateException;
-import com.delorenzo.Cinema.exception.StorageException;
-import com.delorenzo.Cinema.exception.UploadFileException;
 import com.delorenzo.Cinema.service.*;
 import com.delorenzo.Cinema.utils.CalendarUtils;
 import com.delorenzo.Cinema.utils.MovieUtils;
@@ -15,7 +13,6 @@ import com.delorenzo.Cinema.utils.ScreeningUtils;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import java.nio.file.Path;
@@ -46,10 +43,10 @@ public class MainController {
         monday = CalendarUtils.findTheMondayOfTheWeek(calendar.getCurrentDate());
         LocalDate nextMonday = CalendarUtils.findTheMondayOfTheWeek(monday.plusDays(7));
         List<WeeklyScreeningsDTO> currentWeekScreeningsDTOS = getWeeklyScreeningsAsDTO(monday);
-        List<WeeklyScreeningsDTO> nextWeekScreeningsDTOS = getWeeklyScreeningsAsDTO(nextMonday);
+        List<WeeklyScreeningsDTO> nextWeekExpectedScreeningsDTOS = getNextWeekExpectedScreeningsAsDTO();
         model.addAttribute("screeningList", currentWeekScreeningsDTOS);
         model.addAttribute("nextWeek", "da " + nextMonday + " a " + nextMonday.plusDays(7));
-        model.addAttribute("roomListNextWeek", nextWeekScreeningsDTOS);
+        model.addAttribute("roomListNextWeek", nextWeekExpectedScreeningsDTOS);
         model.addAttribute("currentDay", calendar.getCurrentDate());
         return "home";
     }
@@ -81,7 +78,7 @@ public class MainController {
         return "movieList";
     }
 
-    @GetMapping("/movies/upload")
+    @GetMapping("/upload")
     public String showUploadPage(Model model) {
         model.addAttribute("currentDay", calendar.getCurrentDate());
         return "upload";
@@ -100,31 +97,17 @@ public class MainController {
         return "redirect:/";
     }
 
-    @ExceptionHandler(NotAValidDateException.class)
-    public String handleNotAValidDateException(NotAValidDateException ex, Model model) {
-            model.addAttribute("type", "Invalid Date");
-            model.addAttribute("errorMessage", ex.getMessage());
-        return "error";
-    }
-
-    @ExceptionHandler(StorageException.class)
-    public String handleStorageFileError(Exception ex, Model model){
-        model.addAttribute("type", "File Error");
-        model.addAttribute("errorMessage", ex.getMessage());
-        return "error";
-    }
-
-    @ExceptionHandler(UploadFileException.class)
-    public String handleUploadFileError(Exception ex, Model model){
-        model.addAttribute("type", "File Error");
-        model.addAttribute("errorMessage", ex.getMessage());
-        return "error";
-    }
-
     private List<WeeklyScreeningsDTO> getWeeklyScreeningsAsDTO(LocalDate monday){
         List<Screening> weeklyScreenings = screeningService.getScreeningsOfAWeek(monday);
         return ScreeningUtils.getRoomScreeningDTOList(weeklyScreenings);
     }
+
+    private List<WeeklyScreeningsDTO> getNextWeekExpectedScreeningsAsDTO(){
+        List<Screening> weeklyScreenings = screeningService.getScheduledScreenings();
+        return ScreeningUtils.getRoomScreeningDTOList(weeklyScreenings);
+    }
+
+
 
     private List<MovieDTO> getMoviesDTOS() {
         List<Movie> movies = movieService.findAllMovies();

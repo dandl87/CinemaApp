@@ -2,6 +2,8 @@ package com.delorenzo.Cinema.service;
 
 import com.delorenzo.Cinema.conf.StorageProperties;
 import com.delorenzo.Cinema.exception.StorageException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
@@ -24,6 +26,7 @@ import java.util.stream.Stream;
 public class FileSystemStorageService implements StorageService{
 
     private final Path rootLocation;
+    private static final Logger logger = LoggerFactory.getLogger(FileSystemStorageService.class);
 
     @Autowired
     public FileSystemStorageService(StorageProperties properties) {
@@ -58,6 +61,11 @@ public class FileSystemStorageService implements StorageService{
                 throw new StorageException(
                         "Cannot store file outside current directory.");
             }
+            if (!Objects.requireNonNull(file.getContentType()).endsWith("vnd.openxmlformats-officedocument.spreadsheetml.sheet")) {
+                throw new StorageException(
+                        "Cannot read file with extension different from xlsx format.");
+            }
+            logger.info(file.getContentType());
             try (InputStream inputStream = file.getInputStream()) {
                 Files.copy(inputStream, destinationFile,
                         StandardCopyOption.REPLACE_EXISTING);
