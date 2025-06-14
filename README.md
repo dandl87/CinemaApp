@@ -16,6 +16,9 @@ La piattaforma backend deve rendere possibile l'inserimento di nuovi film tramit
 - Al click del pulsante sunday viene simulato l'inizio di una nuova settimana di programmazione
 
 ## Run
+
+mvn clean package -DskipTests
+
 docker-compose up --build
 
 the application listen on port 8081

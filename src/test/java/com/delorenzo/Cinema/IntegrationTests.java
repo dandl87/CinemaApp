@@ -1,15 +1,10 @@
 package com.delorenzo.Cinema;
 
-import com.delorenzo.Cinema.conf.SchedulerConfig;
-import com.delorenzo.Cinema.conf.StorageProperties;
 import com.delorenzo.Cinema.entity.Movie;
 import com.delorenzo.Cinema.entity.Room;
 import com.delorenzo.Cinema.repository.MovieRepository;
 import com.delorenzo.Cinema.repository.RoomRepository;
-import com.delorenzo.Cinema.service.FileSystemStorageService;
-import com.delorenzo.Cinema.service.StorageService;
 import org.junit.jupiter.api.*;
-import org.mockito.Mock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
