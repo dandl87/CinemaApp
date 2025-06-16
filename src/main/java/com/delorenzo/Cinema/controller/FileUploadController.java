@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.io.IOException;
 import java.util.Optional;
 
 
@@ -31,21 +30,21 @@ public class FileUploadController {
 
     @GetMapping("/files/{filename:.+}")
     @ResponseBody
-    public ResponseEntity<Optional<Resource>> serveFile(@PathVariable String filename) {
+    public ResponseEntity<String> serveFile(@PathVariable String filename) {
         Optional<Resource> file = loadFile(filename);
         if (file.isEmpty())
             return ResponseEntity.notFound().build();
         return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
-                "attachment; filename=\"" + file.get().getFilename() + "\"").body(file);
+                "attachment; filename=\"" + file.get().getFilename() + "\"").body(file.get().getFilename());
     }
-    
+
     private Optional<Resource> loadFile(String filename) throws StorageException {
         try{
             return Optional.of(storageService.loadAsResource(filename));
-        } catch (StorageException e) {
+        } catch (Exception e) {
              logger.error(e.getMessage());
+             return Optional.empty();
         }
-        return Optional.empty();
     }
 
     @PostMapping("/files/insert")
@@ -70,8 +69,8 @@ public class FileUploadController {
     private void batchProcessing(String fileName){
         try {
             mainService.batch(fileName);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage());
         }
     }
 
