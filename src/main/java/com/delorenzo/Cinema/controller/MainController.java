@@ -6,6 +6,7 @@ import com.delorenzo.Cinema.dto.WeeklyScreeningsDTO;
 import com.delorenzo.Cinema.entity.Movie;
 import com.delorenzo.Cinema.entity.Screening;
 import com.delorenzo.Cinema.exception.NotAValidDateException;
+import com.delorenzo.Cinema.exception.StorageException;
 import com.delorenzo.Cinema.service.*;
 import com.delorenzo.Cinema.utils.CalendarUtils;
 import com.delorenzo.Cinema.utils.MovieUtils;
@@ -106,14 +107,14 @@ public class MainController {
     }
 
     @GetMapping("/files")
-    public String showUploadFiles(Model model) {
+    public String showUploadFiles(Model model) throws StorageException {
         List<Path> filePaths = getFilesLoadedPath();
         model.addAttribute("files", filePaths);
         model.addAttribute("currentDay", calendar.getCurrentDate());
         return "uploadResultPage";
     }
 
-    private List<Path> getFilesLoadedPath(){
+    private List<Path> getFilesLoadedPath() throws StorageException {
         return storageService.loadAll().map(Path::getFileName).collect(Collectors.toList());
     }
 

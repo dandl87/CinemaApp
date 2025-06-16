@@ -29,7 +29,7 @@ public class FileSystemStorageService implements StorageService{
     private static final Logger logger = LoggerFactory.getLogger(FileSystemStorageService.class);
 
     @Autowired
-    public FileSystemStorageService(StorageProperties properties) {
+    public FileSystemStorageService(StorageProperties properties) throws StorageException {
         if(properties.getLocation().trim().isEmpty()) {
             throw new StorageException("File upload location can not be empty");
         }
@@ -37,7 +37,7 @@ public class FileSystemStorageService implements StorageService{
     }
 
     @Override
-    public void init() {
+    public void init() throws StorageException {
         try {
             Files.createDirectories(rootLocation);
         }
@@ -48,8 +48,7 @@ public class FileSystemStorageService implements StorageService{
     }
 
     @Override
-    public void store(MultipartFile file) {
-        try {
+    public void store(MultipartFile file) throws StorageException {
             if (file.isEmpty()) {
                 throw new StorageException("Failed to store empty file.");
             }
@@ -69,16 +68,14 @@ public class FileSystemStorageService implements StorageService{
             try (InputStream inputStream = file.getInputStream()) {
                 Files.copy(inputStream, destinationFile,
                         StandardCopyOption.REPLACE_EXISTING);
+            } catch (IOException e) {
+                throw new StorageException(e.getMessage());
             }
-        }
-        catch (IOException e) {
-            throw new StorageException("Failed to store file.", e);
-        }
 
     }
 
     @Override
-    public Stream<Path> loadAll() {
+    public Stream<Path> loadAll() throws StorageException {
         try {
             return Files.walk(this.rootLocation, 1)
                     .filter(path -> !path.equals(this.rootLocation))

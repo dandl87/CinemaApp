@@ -38,7 +38,7 @@ public class FileUploadController {
                 "attachment; filename=\"" + file.get().getFilename() + "\"").body(file.get().getFilename());
     }
 
-    private Optional<Resource> loadFile(String filename) throws StorageException {
+    private Optional<Resource> loadFile(String filename) {
         try{
             return Optional.of(storageService.loadAsResource(filename));
         } catch (Exception e) {
@@ -50,7 +50,7 @@ public class FileUploadController {
     @PostMapping("/files/insert")
     public String handleFileUpload(
             @RequestParam("file") MultipartFile file,
-            RedirectAttributes redirectAttributes){
+            RedirectAttributes redirectAttributes) throws StorageException {
         logger.info(file.getOriginalFilename());
         saveAFile(file);
         redirectAttributes.addFlashAttribute("message", "File "+file.getOriginalFilename()+" uploaded successfully!");
@@ -58,19 +58,21 @@ public class FileUploadController {
         return "redirect:/files";
     }
 
-    private void saveAFile(MultipartFile file){
+    private void saveAFile(MultipartFile file) throws StorageException {
         try {
             storageService.store(file);
         }catch (StorageException e){
             logger.error(e.getMessage());
+            throw new StorageException(e.getMessage());
         }
     }
 
-    private void batchProcessing(String fileName){
+    private void batchProcessing(String fileName) throws StorageException {
         try {
             mainService.batch(fileName);
         } catch (Exception e) {
             logger.error(e.getMessage());
+            throw new StorageException(e.getMessage());
         }
     }
 

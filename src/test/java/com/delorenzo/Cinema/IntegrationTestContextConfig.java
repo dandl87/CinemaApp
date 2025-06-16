@@ -3,6 +3,7 @@ package com.delorenzo.Cinema;
 import com.delorenzo.Cinema.conf.ApplicationProperties;
 import com.delorenzo.Cinema.conf.DateHolder;
 import com.delorenzo.Cinema.conf.StorageProperties;
+import com.delorenzo.Cinema.exception.StorageException;
 import com.delorenzo.Cinema.logic.Scheduler;
 import com.delorenzo.Cinema.repository.ScreeningRepository;
 import com.delorenzo.Cinema.service.FileSystemStorageService;
@@ -38,7 +39,7 @@ public class IntegrationTestContextConfig {
 
 
     @Bean
-    public StorageService storageService( ) {
+    public StorageService storageService( ) throws StorageException {
         return new FileSystemStorageService(new StorageProperties());
     }
 
