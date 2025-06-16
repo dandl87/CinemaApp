@@ -1,6 +1,5 @@
 package com.delorenzo.Cinema.controller;
 
-import com.delorenzo.Cinema.conf.DateHolder;
 import com.delorenzo.Cinema.dto.MovieDTO;
 import com.delorenzo.Cinema.dto.MovieToSearchDTO;
 import com.delorenzo.Cinema.dto.WeeklyScreeningsDTO;
@@ -24,14 +23,13 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/")
 public class MainRestController {
+
     private final MovieService movieService;
     private final ScreeningService screeningService;
-    private final DateHolder currentDay;
 
-    public MainRestController(MovieService movieService, ScreeningService screeningService, DateHolder currentDay) {
+    public MainRestController(MovieService movieService, ScreeningService screeningService) {
         this.movieService = movieService;
         this.screeningService = screeningService;
-        this.currentDay = currentDay;
     }
 
     @GetMapping("/movie-screenings/week")

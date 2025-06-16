@@ -32,10 +32,8 @@ public class FileUploadController {
     @ResponseBody
     public ResponseEntity<String> serveFile(@PathVariable String filename) {
         Optional<Resource> file = loadFile(filename);
-        if (file.isEmpty())
-            return ResponseEntity.notFound().build();
-        return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
-                "attachment; filename=\"" + file.get().getFilename() + "\"").body(file.get().getFilename());
+        return file.map(resource -> ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
+                "attachment; filename=\"" + resource.getFilename() + "\"").body(resource.getFilename())).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     private Optional<Resource> loadFile(String filename) {

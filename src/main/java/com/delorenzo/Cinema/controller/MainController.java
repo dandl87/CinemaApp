@@ -30,7 +30,11 @@ public class MainController {
     private final ScreeningService screeningService;
     private final DateHolder calendar;
 
-    public MainController(MovieService movieService, StorageService storageService, ScreeningService screeningService, MainService mainService, DateHolder calendar) {
+    public MainController(MovieService movieService,
+                          StorageService storageService,
+                          ScreeningService screeningService,
+                          MainService mainService,
+                          DateHolder calendar) {
         this.movieService = movieService;
         this.storageService = storageService;
         this.screeningService = screeningService;
@@ -41,7 +45,7 @@ public class MainController {
     @GetMapping("/")
     public String showHomePage(Model model) {
         LocalDate monday = CalendarUtils.findTheMondayOfTheWeek(calendar.getCurrentDate());
-        LocalDate nextMonday = CalendarUtils.findTheMondayOfTheWeek(monday.plusDays(7));
+        LocalDate nextMonday = monday.plusDays(7);
         List<WeeklyScreeningsDTO> currentWeekScreeningsAsDTO = getWeeklyScreenings(monday);
         List<WeeklyScreeningsDTO> nextWeekExpectedScreeningsAsDTO = getNextWeekExpectedScreenings();
         model.addAttribute("screeningList", currentWeekScreeningsAsDTO);
@@ -53,16 +57,8 @@ public class MainController {
 
     @GetMapping("/screenings")
     public String showWeeklyScreenings(@RequestParam(value = "data", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate day, Model model){
-        LocalDate monday;
-        String mondayFormatted;
-        if (day==null)
-            monday = setMondayOfThisWeek();
-        else {
-            monday = CalendarUtils.findTheMondayOfTheWeek(day);
-            if (monday.isAfter(calendar.getCurrentDate()))
-                throw new NotAValidDateException("Future Screenings are not defined");
-        }
-        mondayFormatted = mondayFormatter();
+        LocalDate monday = assignMonday(day);
+        String mondayFormatted = mondayFormatter();;
         List<WeeklyScreeningsDTO> weekScreeningsAsDTO = getWeeklyScreenings(monday);
         model.addAttribute("screeningList", weekScreeningsAsDTO);
         model.addAttribute("dayFormatted", mondayFormatted);
@@ -74,6 +70,17 @@ public class MainController {
         LocalDate monday = setMondayOfThisWeek();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         return monday.format(formatter);
+    }
+    private LocalDate assignMonday(LocalDate day){
+        LocalDate monday;
+        if (day==null)
+            monday = setMondayOfThisWeek();
+        else {
+            monday = CalendarUtils.findTheMondayOfTheWeek(day);
+            if (monday.isAfter(calendar.getCurrentDate()))
+                throw new NotAValidDateException("Future Screenings are not defined");
+        }
+        return monday;
     }
 
     private List<WeeklyScreeningsDTO> getWeeklyScreenings(LocalDate monday){

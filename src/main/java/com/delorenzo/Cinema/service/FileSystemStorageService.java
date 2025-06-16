@@ -49,29 +49,38 @@ public class FileSystemStorageService implements StorageService{
 
     @Override
     public void store(MultipartFile file) throws StorageException {
-            if (file.isEmpty()) {
-                throw new StorageException("Failed to store empty file.");
-            }
-            Path destinationFile = this.rootLocation.resolve(
-                            Paths.get(Objects.requireNonNull(file.getOriginalFilename())))
-                    .normalize().toAbsolutePath();
-            if (!destinationFile.getParent().equals(this.rootLocation.toAbsolutePath())) {
-                // This is a security check
-                throw new StorageException(
-                        "Cannot store file outside current directory.");
-            }
-            if (!Objects.requireNonNull(file.getContentType()).endsWith("vnd.openxmlformats-officedocument.spreadsheetml.sheet")) {
-                throw new StorageException(
-                        "Cannot read file with extension different from xlsx format.");
-            }
+
             logger.info(file.getContentType());
+
             try (InputStream inputStream = file.getInputStream()) {
-                Files.copy(inputStream, destinationFile,
+
+            Path destinationFile = checkFile(file);
+
+            Files.copy(inputStream,
+                        destinationFile,
                         StandardCopyOption.REPLACE_EXISTING);
-            } catch (IOException e) {
+            } catch (Exception e) {
                 throw new StorageException(e.getMessage());
             }
 
+    }
+
+    private Path checkFile(MultipartFile file) throws StorageException {
+        if (file.isEmpty())
+            throw new StorageException("Failed to store empty file.");
+
+        Path destinationFile = this.rootLocation.resolve(
+                        Paths.get(Objects.requireNonNull(file.getOriginalFilename())))
+                .normalize().toAbsolutePath();
+        if (!destinationFile.getParent().equals(this.rootLocation.toAbsolutePath()))
+            throw new StorageException(
+                    "Cannot store file outside current directory.");
+
+        if (!Objects.requireNonNull(file.getContentType()).endsWith("vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+            throw new StorageException(
+                    "Cannot read file with extension different from xlsx format.");
+
+        return destinationFile;
     }
 
     @Override
@@ -81,7 +90,7 @@ public class FileSystemStorageService implements StorageService{
                     .filter(path -> !path.equals(this.rootLocation))
                     .map(this.rootLocation::relativize);
         }
-        catch (IOException e) {
+        catch (Exception e) {
             throw new StorageException("Failed to read stored files", e);
         }
     }
