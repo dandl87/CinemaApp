@@ -28,7 +28,6 @@ public class MainController {
     private final StorageService storageService;
     private final ScreeningService screeningService;
     private final DateHolder calendar;
-    private LocalDate monday;
 
     public MainController(MovieService movieService, StorageService storageService, ScreeningService screeningService, MainService mainService, DateHolder calendar) {
         this.movieService = movieService;
@@ -40,43 +39,65 @@ public class MainController {
 
     @GetMapping("/")
     public String showHomePage(Model model) {
-        monday = CalendarUtils.findTheMondayOfTheWeek(calendar.getCurrentDate());
+        LocalDate monday = CalendarUtils.findTheMondayOfTheWeek(calendar.getCurrentDate());
         LocalDate nextMonday = CalendarUtils.findTheMondayOfTheWeek(monday.plusDays(7));
-        List<WeeklyScreeningsDTO> currentWeekScreeningsDTOS = getWeeklyScreeningsAsDTO(monday);
-        List<WeeklyScreeningsDTO> nextWeekExpectedScreeningsDTOS = getNextWeekExpectedScreeningsAsDTO();
-        model.addAttribute("screeningList", currentWeekScreeningsDTOS);
+        List<WeeklyScreeningsDTO> currentWeekScreeningsAsDTO = getWeeklyScreenings(monday);
+        List<WeeklyScreeningsDTO> nextWeekExpectedScreeningsAsDTO = getNextWeekExpectedScreenings();
+        model.addAttribute("screeningList", currentWeekScreeningsAsDTO);
         model.addAttribute("nextWeek", "da " + nextMonday + " a " + nextMonday.plusDays(7));
-        model.addAttribute("roomListNextWeek", nextWeekExpectedScreeningsDTOS);
+        model.addAttribute("roomListNextWeek", nextWeekExpectedScreeningsAsDTO);
         model.addAttribute("currentDay", calendar.getCurrentDate());
         return "home";
     }
+
     @GetMapping("/screenings")
     public String showWeeklyScreenings(@RequestParam(value = "data", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate day, Model model){
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        String dayFormatted;
+        LocalDate monday;
+        String mondayFormatted;
         if (day==null)
-            monday = CalendarUtils.findTheMondayOfTheWeek(calendar.getCurrentDate());
+            monday = setMondayOfThisWeek();
         else {
             monday = CalendarUtils.findTheMondayOfTheWeek(day);
             if (monday.isAfter(calendar.getCurrentDate()))
                 throw new NotAValidDateException("Future Screenings are not defined");
         }
-        dayFormatted = monday.format(formatter);
-        List<Screening> weeklyScreenings = screeningService.getScreeningsOfAWeek(monday);
-        List<WeeklyScreeningsDTO> weeklyScreeningsDTOS = ScreeningUtils.getRoomScreeningDTOList(weeklyScreenings);
-        model.addAttribute("screeningList", weeklyScreeningsDTOS);
-        model.addAttribute("dayFormatted", dayFormatted);
+        mondayFormatted = mondayFormatter();
+        List<WeeklyScreeningsDTO> weekScreeningsAsDTO = getWeeklyScreenings(monday);
+        model.addAttribute("screeningList", weekScreeningsAsDTO);
+        model.addAttribute("dayFormatted", mondayFormatted);
         model.addAttribute("currentDay", calendar.getCurrentDate());
         return "screeningsPage";
     }
 
+    private String mondayFormatter(){
+        LocalDate monday = setMondayOfThisWeek();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        return monday.format(formatter);
+    }
+
+    private List<WeeklyScreeningsDTO> getWeeklyScreenings(LocalDate monday){
+        List<Screening> weeklyScreenings = screeningService.getScreeningsOfAWeek(monday);
+        return ScreeningUtils.getRoomScreeningDTOList(weeklyScreenings);
+    }
+
+    private List<WeeklyScreeningsDTO> getNextWeekExpectedScreenings(){
+        List<Screening> weeklyScreenings = screeningService.getScheduledScreenings();
+        return ScreeningUtils.getRoomScreeningDTOList(weeklyScreenings);
+    }
+
     @GetMapping("/movies")
     public String showMovieList(Model model) {
-        List<MovieDTO> moviesDTOS = getMoviesDTOS();
-        model.addAttribute("filmList", moviesDTOS);
+        List<MovieDTO> moviesAsDTO = getMovies();
+        model.addAttribute("filmList", moviesAsDTO);
         model.addAttribute("currentDay", calendar.getCurrentDate());
         return "movieList";
     }
+
+    private List<MovieDTO> getMovies() {
+        List<Movie> movies = movieService.findAllMovies();
+        return MovieUtils.getMoviesDTOFromMovies(movies);
+    }
+
 
     @GetMapping("/upload")
     public String showUploadPage(Model model) {
@@ -86,9 +107,14 @@ public class MainController {
 
     @GetMapping("/files")
     public String showUploadFiles(Model model) {
-        model.addAttribute("files", storageService.loadAll().map(Path::getFileName).collect(Collectors.toList()));
+        List<Path> filePaths = getFilesLoadedPath();
+        model.addAttribute("files", filePaths);
         model.addAttribute("currentDay", calendar.getCurrentDate());
         return "uploadResultPage";
+    }
+
+    private List<Path> getFilesLoadedPath(){
+        return storageService.loadAll().map(Path::getFileName).collect(Collectors.toList());
     }
 
     @GetMapping("/sunday")
@@ -97,20 +123,11 @@ public class MainController {
         return "redirect:/";
     }
 
-    private List<WeeklyScreeningsDTO> getWeeklyScreeningsAsDTO(LocalDate monday){
-        List<Screening> weeklyScreenings = screeningService.getScreeningsOfAWeek(monday);
-        return ScreeningUtils.getRoomScreeningDTOList(weeklyScreenings);
-    }
-
-    private List<WeeklyScreeningsDTO> getNextWeekExpectedScreeningsAsDTO(){
-        List<Screening> weeklyScreenings = screeningService.getScheduledScreenings();
-        return ScreeningUtils.getRoomScreeningDTOList(weeklyScreenings);
+    private LocalDate setMondayOfThisWeek(){
+       return CalendarUtils.findTheMondayOfTheWeek(calendar.getCurrentDate());
     }
 
 
 
-    private List<MovieDTO> getMoviesDTOS() {
-        List<Movie> movies = movieService.findAllMovies();
-        return MovieUtils.getMoviesDTOFromMovies(movies);
-    }
+
 }

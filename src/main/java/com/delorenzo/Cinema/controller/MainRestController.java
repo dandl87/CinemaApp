@@ -24,7 +24,6 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/")
 public class MainRestController {
-
     private final MovieService movieService;
     private final ScreeningService screeningService;
     private final DateHolder currentDay;
@@ -38,31 +37,37 @@ public class MainRestController {
     @GetMapping("/movie-screenings/week")
     public ResponseEntity<List<WeeklyScreeningsDTO>> findMovieScreeningsOfAWeek(@RequestParam LocalDate day) {
         LocalDate monday = CalendarUtils.findTheMondayOfTheWeek(day);
-        List<Screening> weekTemp = screeningService.getScreeningsOfAWeek(monday);
-        List<WeeklyScreeningsDTO> week = ScreeningUtils.getRoomScreeningDTOList(weekTemp);
-        return ResponseEntity.ok(week);
+        List<WeeklyScreeningsDTO> screeningsAsDTO = getWeeklyScreenings(monday);
+        return ResponseEntity.ok(screeningsAsDTO);
     }
 
-    @GetMapping("/movie-screenings/last-week")
-    public ResponseEntity<List<WeeklyScreeningsDTO>> findMovieScreeningsOfTheLastWeek() {
-        List<Screening> weekTemp = screeningService.getScreeningsOfAWeek(CalendarUtils.findTheMondayOfTheWeek(currentDay.getCurrentDate()));
-        List<WeeklyScreeningsDTO> week = ScreeningUtils.getRoomScreeningDTOList(weekTemp);
-        return ResponseEntity.ok(week);
+
+    private List<WeeklyScreeningsDTO> getWeeklyScreenings(LocalDate monday){
+        List<Screening> weeklyScreenings = screeningService.getScreeningsOfAWeek(monday);
+        return ScreeningUtils.getRoomScreeningDTOList(weeklyScreenings);
     }
 
     @PostMapping("/movies/find-by-example")
     public ResponseEntity<List<MovieDTO>> findMovie(
             @RequestBody MovieToSearchDTO movieDTO) {
         Movie movie = new Movie(movieDTO.getTitle(),movieDTO.getDirector(),movieDTO.getYear());
-        List<MovieDTO> movies = movieService.findMovie(movie);
+        List<MovieDTO> movies = getMovies(movie);
         return ResponseEntity.ok(movies);
+    }
+
+    private List<MovieDTO> getMovies(Movie movie){
+        return movieService.findMovie(movie);
     }
 
     @GetMapping("/movies/search")
     public ResponseEntity<List<MovieDTO>> searchMovie(
             @RequestParam String title) {
-        List<MovieDTO> movies = movieService.findMovieTitledLike(title);
+        List<MovieDTO> movies = getMovies(title);
         return ResponseEntity.ok(movies);
+    }
+
+    private List<MovieDTO> getMovies(String title){
+        return movieService.findMovieTitledLike(title);
     }
 
     @GetMapping("/movies/find-by-title")
@@ -70,8 +75,14 @@ public class MainRestController {
             @RequestParam String title) {
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.add("error", "Movie Not Found");
-        Optional<MovieDTO> movie = movieService.findMovieByTitle(title);
+        Optional<MovieDTO> movie = getMovieByTitle(title);
         return movie.map(ResponseEntity::ok).orElseGet(() -> new ResponseEntity<>(new MovieDTO(), responseHeaders, 404));
     }
+
+    private Optional<MovieDTO> getMovieByTitle(String title){
+        return movieService.findMovieByTitle(title);
+    }
+
+
 
 }

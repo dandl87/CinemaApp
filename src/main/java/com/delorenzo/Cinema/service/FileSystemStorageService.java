@@ -95,7 +95,7 @@ public class FileSystemStorageService implements StorageService{
     }
 
     @Override
-    public Resource loadAsResource(String filename) {
+    public Resource loadAsResource(String filename) throws StorageException {
         try {
             Path file = load(filename);
             Resource resource = new UrlResource(file.toUri());
