@@ -49,7 +49,7 @@ public class CinemaApplication {
             storageService.init();
             List<Movie> movies = movieRepository.findAll();
             schedulingService.scheduleNewMovies(movies);
-            List<Screening> screeningsToBeSaved = screeningService.getScheduledScreenings();
+            List<Screening> screeningsToBeSaved = schedulingService.getScheduledScreenings();
             schedulingService.incrementSchedulerMoviesNumberOfWeeks();
             screeningService.saveInitialScreenings(screeningsToBeSaved);
             logger.info("--- Initialization phase ended ---");

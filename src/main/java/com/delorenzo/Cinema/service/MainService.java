@@ -75,7 +75,7 @@ public class MainService {
 
     private List<Screening> prepareScreeningsForDb() {
         LocalDate lastMonday = CalendarUtils.findTheMondayOfTheWeek(currentDay.getCurrentDate());
-        List<Screening> screeningsScheduled = screeningService.getScheduledScreenings();
+        List<Screening> screeningsScheduled = schedulingService.getScheduledScreenings();
         List<Screening> screeningsOnAir = screeningService.getScreeningsOfAWeek(lastMonday);
         return ScreeningUtils.getScreeningsToBeSavedPreparedForDb(screeningsOnAir, screeningsScheduled);
     }

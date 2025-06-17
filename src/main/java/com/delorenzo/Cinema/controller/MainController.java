@@ -28,17 +28,19 @@ public class MainController {
     private final MovieService movieService;
     private final StorageService storageService;
     private final ScreeningService screeningService;
+    private final SchedulingService schedulingService;
     private final DateHolder calendar;
 
     public MainController(MovieService movieService,
                           StorageService storageService,
                           ScreeningService screeningService,
-                          MainService mainService,
+                          MainService mainService, SchedulingService schedulingService,
                           DateHolder calendar) {
         this.movieService = movieService;
         this.storageService = storageService;
         this.screeningService = screeningService;
         this.mainService = mainService;
+        this.schedulingService = schedulingService;
         this.calendar = calendar;
     }
 
@@ -89,7 +91,7 @@ public class MainController {
     }
 
     private List<WeeklyScreeningsDTO> getNextWeekExpectedScreenings(){
-        List<Screening> weeklyScreenings = screeningService.getScheduledScreenings();
+        List<Screening> weeklyScreenings = schedulingService.getScheduledScreenings();
         return ScreeningUtils.getRoomScreeningDTOList(weeklyScreenings);
     }
 

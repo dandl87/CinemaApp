@@ -54,20 +54,6 @@ public class ScreeningService {
 
     }
 
-
-    public List<Screening> getScheduledScreenings() {
-        List<Screening> screenings = new ArrayList<>();
-        imaxScheduler.getScheduledScreenings().stream().filter(Objects::nonNull).forEach(s -> {
-                    screenings.add(s.clone());
-                }
-        );
-        regularScheduler.getScheduledScreenings().stream().filter(Objects::nonNull).forEach(s -> {
-                    screenings.add(s.clone());
-                }
-        );
-        return screenings;
-    }
-
     public List<Screening> getScreeningsOfAWeek(LocalDate monday) {
         int numberOfWeeks = applicationProperties.getWeeksToLive();
         List<Screening> screeningsCreatedOnMonday  = screeningRepository.findScreeningByFirstDay(monday);

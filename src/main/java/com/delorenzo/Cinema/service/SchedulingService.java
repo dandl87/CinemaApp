@@ -1,6 +1,7 @@
 package com.delorenzo.Cinema.service;
 
 import com.delorenzo.Cinema.entity.Movie;
+import com.delorenzo.Cinema.entity.Screening;
 import com.delorenzo.Cinema.logic.Scheduler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,16 +22,6 @@ public class SchedulingService {
         this.regularScheduler = regularScheduler;
     }
 
-    public void incrementSchedulerMoviesNumberOfWeeks(){
-        logger.info("Incrementing number Of weeks of schedulers movies");
-        imaxScheduler.getScheduledScreenings().stream()
-                .filter(Objects::nonNull)
-                .forEach(s -> s.setNumberOfWeeks(s.getNumberOfWeeks() + 1));
-        regularScheduler.getScheduledScreenings().stream()
-                .filter(Objects::nonNull)
-                .forEach(s -> s.setNumberOfWeeks(s.getNumberOfWeeks() + 1));
-    }
-
     public void scheduleNewMovies(List<Movie> movies) {
         logger.info("Scheduling new movies");
         List<Movie> imaxMovies = new ArrayList<>();
@@ -45,9 +36,32 @@ public class SchedulingService {
         regularScheduler.scheduling(regularMovies);
     }
 
+    public List<Screening> getScheduledScreenings() {
+        List<Screening> screenings = new ArrayList<>();
+        imaxScheduler.getScheduledScreenings().stream().filter(Objects::nonNull).forEach(s -> {
+                    screenings.add(s.clone());
+                }
+        );
+        regularScheduler.getScheduledScreenings().stream().filter(Objects::nonNull).forEach(s -> {
+                    screenings.add(s.clone());
+                }
+        );
+        return screenings;
+    }
+
     public void removeScreenings() {
         imaxScheduler.removeScreenings();
         regularScheduler.removeScreenings();
+    }
+
+    public void incrementSchedulerMoviesNumberOfWeeks(){
+        logger.info("Incrementing number Of weeks of schedulers movies");
+        imaxScheduler.getScheduledScreenings().stream()
+                .filter(Objects::nonNull)
+                .forEach(s -> s.setNumberOfWeeks(s.getNumberOfWeeks() + 1));
+        regularScheduler.getScheduledScreenings().stream()
+                .filter(Objects::nonNull)
+                .forEach(s -> s.setNumberOfWeeks(s.getNumberOfWeeks() + 1));
     }
 
 }
