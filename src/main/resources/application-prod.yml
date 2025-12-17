@@ -1,0 +1,60 @@
+cinema:
+  weeks-to-live: 3
+
+server:
+  error:
+    path: '/error'
+
+spring:
+  application:
+    name: cinema
+
+  thymeleaf:
+    cache: false
+
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+
+  sql:
+    init:
+      mode: always
+
+  jpa:
+    defer-datasource-initialization: true
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        show_sql: false
+
+  servlet:
+    multipart:
+      max-file-size: 128KB
+      max-request-size: 128KB
+
+logging:
+  level:
+    org:
+      springframework:
+        web:
+          servlet:
+            mvc:
+              method:
+                annotation:
+                  RequestResponseBodyMethodProcessor: WARN
+            DispatcherServlet: WARN
+      hibernate:
+        Version: OFF
+        boot: OFF
+    com:
+      zaxxer:
+        hikari: OFF
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path:
+      swagger.html
