@@ -13,9 +13,7 @@ spring:
     cache: false
 
   datasource:
-    url: ${SPRING_DATASOURCE_URL}
-    username: ${SPRING_DATASOURCE_USERNAME}
-    password: ${SPRING_DATASOURCE_PASSWORD}
+    url: jdbc:${DATABASE_PUBLIC_URL}
     driver-class-name: org.postgresql.Driver
 
   sql:
