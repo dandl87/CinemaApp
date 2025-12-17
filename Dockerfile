@@ -1,5 +1,5 @@
 # Scegli l'immagine di base Java 21
-FROM openjdk:21
+FROM eclipse-temurin:21-jdk
 
 # Imposta la directory di lavoro all'interno del container
 WORKDIR /app
