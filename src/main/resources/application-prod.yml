@@ -13,7 +13,7 @@ spring:
     cache: false
 
   datasource:
-    url: jdbc:${DATABASE_URL}
+    url: jdbc:${DATABASE_PUBLIC_URL}
     driver-class-name: org.postgresql.Driver
 
   sql:
@@ -23,7 +23,7 @@ spring:
   jpa:
     defer-datasource-initialization: true
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     properties:
       hibernate:
         show_sql: false

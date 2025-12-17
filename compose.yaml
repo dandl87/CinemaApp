@@ -5,7 +5,6 @@ services:
       - 'POSTGRES_DB=cinema'
       - 'POSTGRES_PASSWORD=password'
       - 'POSTGRES_USER=user'
-      - 'SPRING_PROFILES_ACTIVE=dev'
     ports:
       - '5432'
   app:
