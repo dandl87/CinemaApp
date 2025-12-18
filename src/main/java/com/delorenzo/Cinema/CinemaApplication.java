@@ -30,7 +30,7 @@ public class CinemaApplication {
     public static void main(String[] args) {
         // starting operations
         SpringApplication application = new SpringApplication(CinemaApplication.class);
-        application.setAdditionalProfiles("dev");
+        //application.setAdditionalProfiles("dev");
         application.setBannerMode(Banner.Mode.OFF);
         application.addListeners((ApplicationListener<ApplicationStartedEvent>) event -> System.out.println("Applicazione Avviata!"));
         application.run(args);
