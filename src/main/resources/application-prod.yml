@@ -12,12 +12,6 @@ spring:
   thymeleaf:
     cache: false
 
-  datasource:
-    url: jdbc:postgresql://${PGHOST}:${PGPORT}/${PGDATABASE}
-    username: ${PGUSER}
-    password: ${PGPASSWORD}
-    driver-class-name: org.postgresql.Driver
-
   sql:
     init:
       mode: never
