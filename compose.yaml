@@ -1,12 +1,12 @@
 services:
   postgres:
-    image: 'postgres:latest'
+    image: 'postgres:18.1'
     environment:
       - 'POSTGRES_DB=cinema'
       - 'POSTGRES_PASSWORD=password'
       - 'POSTGRES_USER=user'
     ports:
-      - '5432'
+      - '5432:5432'
   app:
     image: 'cinema-app'
     build:
@@ -17,6 +17,7 @@ services:
     ports:
       - '8081:8080'
     environment:
+      SPRING_PROFILES_ACTIVE: 'dev'
       SPRING_DATASOURCE_URL: 'jdbc:postgresql://postgres:5432/cinema'
       SPRING_DATASOURCE_USERNAME: 'user'
       SPRING_DATASOURCE_PASSWORD: 'password'

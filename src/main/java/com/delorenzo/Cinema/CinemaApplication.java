@@ -17,6 +17,8 @@ import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 
 import java.util.List;
@@ -30,7 +32,6 @@ public class CinemaApplication {
     public static void main(String[] args) {
         // starting operations
         SpringApplication application = new SpringApplication(CinemaApplication.class);
-        //application.setAdditionalProfiles("dev");
         application.setBannerMode(Banner.Mode.OFF);
         application.addListeners((ApplicationListener<ApplicationStartedEvent>) event -> System.out.println("Applicazione Avviata!"));
         application.run(args);
@@ -38,7 +39,8 @@ public class CinemaApplication {
 
     @Bean
     @Order(2)
-    CommandLineRunner init(StorageService storageService,
+    @Profile("dev")
+    CommandLineRunner initDev(StorageService storageService,
                            SchedulingService schedulingService,
                            ScreeningService screeningService,
                            MovieRepository movieRepository
